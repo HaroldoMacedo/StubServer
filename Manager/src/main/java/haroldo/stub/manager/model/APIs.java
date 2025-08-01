@@ -22,11 +22,14 @@ public class APIs {
   }
 
   public static void putAPI(API api) throws APIsException {
-    // TODO: Check existing URI.
+    if (exist(api.getService().getId()))
+      throw new APIsException("ID '"  + api.getService().getId()  + "' already in use!");
+    if (exist(api.getService().getUri()))
+      throw new APIsException("URI '" + api.getService().getUri() + "' already in use!");
     apis.put(api.getService().getId(), api);
   }
 
-  public static Service addOrReplace(Service service) throws APIsException {
+  public static Service addService(Service service) throws APIsException {
     API api = new API(service);
     putAPI(api);
     return api.getService();
@@ -36,13 +39,20 @@ public class APIs {
     return apis.containsKey(serviceId);
   }
 
+  public static boolean exist(String uri) {
+    if (apis.values().stream().anyMatch(api -> api.getService().getUri().equals(uri)))
+      return true;
+
+    return false;
+  }
+
   public static Service getService(int serviceId) {
     return Optional.ofNullable(apis.get(serviceId))
             .map(API::getService)
             .orElse(null);
   }
 
-  public static Behaviour getBehaviour(int serviceId) {
+  public static Behaviour getServiceBehaviour(int serviceId) {
     return Optional.ofNullable(apis.get(serviceId))
             .map(API::getBehaviour)
             .orElse(null);

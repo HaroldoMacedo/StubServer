@@ -6,19 +6,25 @@ public class Service {
   private String name = "default";
   private String uri;
   private int portNumber = 80;
-  private int responseTimeMS = 100;
-  private int scalability = 10;
-  private String responseMessage = "Hello World!";
+  private String responseMessage = "{\n  message: \"Hello World!\"\n}";
 
   public static final Service service0 = new Service("/stub/manager/service/default");
 
-  public Service() {
+  protected Service() {
     this.id = nextId++;
     init("/uri-" + this.id);
   }
 
   public Service(String uri) {
     this.id = nextId++;
+    init(uri);
+  }
+
+  public Service(int id, String uri) {
+    if (id > 0)
+      this.id = id;
+    else
+      this.id = nextId++;
     init(uri);
   }
 
@@ -53,22 +59,6 @@ public class Service {
 
   public void setPortNumber(int portNumber) {
     this.portNumber = portNumber;
-  }
-
-  public int getResponseTimeMS() {
-    return responseTimeMS;
-  }
-
-  public void setResponseTimeMS(int responseTimeMS) {
-    this.responseTimeMS = responseTimeMS;
-  }
-
-  public int getScalability() {
-    return scalability;
-  }
-
-  public void setScalability(int scalability) {
-    this.scalability = scalability;
   }
 
   public String getResponseMessage() {

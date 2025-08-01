@@ -2,12 +2,78 @@ package haroldo.stub.manager;
 
 import haroldo.stub.manager.controller.ManagerController;
 import haroldo.stub.manager.resource.Service;
+import haroldo.stub.manager.response.ManagerError;
+import haroldo.stub.manager.response.ManagerResponse;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+
+import java.util.Random;
 
 public class ControllerTest {
+  EmulateServer server = new EmulateServer();
+  Random random = new Random(System.currentTimeMillis());
+
   @Test
   public void addServiceTest() {
+    String uri = "/add/service/test-addservice";
+    int id = random.nextInt(100000);
+    Service service = new Service(id, uri);
+
+    ManagerResponse managerResponse = (ManagerResponse)(server.postService(service)).getBody();
+    assert(managerResponse.getServiceID() == id);
+  }
+
+  @Test
+  public void add10ServicesTest() {
+    String uri = "/add/service/test-addservices";
+
+    for (int i = 0; i < 10; i++) {
+      int id = random.nextInt(100000);
+      Service service = new Service(id + i, uri + id + i);
+      ManagerResponse managerResponse = (ManagerResponse)(server.postService(service)).getBody();
+      assert (managerResponse.getServiceID() == id + i);
+    }
+  }
+
+  @Test
+  public void duplicatedUriTest() {
+    String uri = "/add/service/test-duplicatedUri";
+    int id = random.nextInt(100000);
+    Service service = new Service(id, uri);
     ManagerController controller = new ManagerController();
-    controller.postService(new Service("/add/service/test"));
+
+    //  First POST.
+    ManagerResponse managerResponse = (ManagerResponse)(server.postService(service)).getBody();
+    assert(managerResponse.getServiceID() == id);
+
+    //  Second POST.
+    ManagerError managerError = (ManagerError)(server.postServiceBadRequest(service)).getBody();
+    assert(managerError.getErrorCode() == 0);
+    assert(managerError.getErrorMessage() != null);
+  }
+
+  @Test
+  public void getServiceTest() {
+    String uri = "/add/service/test-getService";
+    int id = random.nextInt(100000);
+    int portNumber = 443;
+    String serviceName = "GET Service";
+    String responseMsg = "This is a GET test!";
+
+    //  Create service.
+    Service service = new Service(id, uri);
+    service.setResponseMessage(responseMsg);
+    service.setPortNumber(portNumber);
+    service.setName(serviceName);
+
+    ManagerResponse managerResponse = (ManagerResponse)(server.postService(service)).getBody();
+    assert(managerResponse.getServiceID() == id);
+
+    Service getResponse = (Service)(server.getService(id)).getBody();
+    assert(getResponse.getId() == id);
+    assert(getResponse.getUri().equals(uri));
+    assert(getResponse.getResponseMessage().equals(responseMsg));
+    assert(getResponse.getName().equals(serviceName));
+    assert(getResponse.getPortNumber() == portNumber);
   }
 }
