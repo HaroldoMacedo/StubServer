@@ -1,11 +1,9 @@
 package haroldo.stub.manager.controller;
 
-import haroldo.stub.manager.model.APIs;
-import haroldo.stub.manager.model.APIsException;
-import haroldo.stub.manager.resource.Behaviour;
+import haroldo.stub.manager.model.Manager;
+import haroldo.stub.manager.model.Service;
+import haroldo.stub.manager.model.ServicesException;
 import haroldo.stub.manager.response.ManagerError;
-import haroldo.stub.manager.response.ManagerResponse;
-import haroldo.stub.manager.resource.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,45 +13,55 @@ import java.util.Optional;
 
 @RestController
 public class ManagerController {
+  public static final String BASE_URI = "/stub/manager";
 
-  @PostMapping("/stub/manager/service")
+  @PutMapping(BASE_URI + "/service/{serviceId}")
   @ResponseBody
-  public ResponseEntity<?> postService(@RequestBody Service service) {
+  public ResponseEntity<?> startService(@PathVariable(name = "serviceId") int serviceId) {
     try {
-      APIs.addService(service);
-      return ResponseEntity.ok(new ManagerResponse(service.getId()));
-    } catch (APIsException e) {
+      Manager.startService(serviceId);
+      return ResponseEntity.ok("{status: \"OK\"");
+    } catch (ServicesException e) {
       System.err.println("Error: " + e.getMessage());
       return ResponseEntity.badRequest().body(new ManagerError(e.getMessage()));
     }
   }
+//
+//  @PostMapping(BASE_URI + "/service")
+//  @ResponseBody
+//  public ResponseEntity<?> postService(@RequestBody Service service) {
+//    try {
+//      Manager.addService(service.getApi(), service.getAttributes());
+//      return ResponseEntity.ok(new ManagerResponse(serviceId));
+//    } catch (ServicesException e) {
+//      System.err.println("Error: " + e.getMessage());
+//      return ResponseEntity.badRequest().body(new ManagerError(e.getMessage()));
+//    }
+//  }
 
-  @PutMapping("/stub/manager/service/{serviceId}/behaviour")
+
+//  @PutMapping(BASE_URI + "/attributes/{attributesId}")
+//  @ResponseBody
+//  public ResponseEntity<Integer> putAttributes(@PathVariable(name = "attributesId") int attributesId,
+//                                                @RequestBody Atributes atributes) {
+//    if (atributes == null)
+//      ResponseEntity.notFound().build();
+//    Integer id = Manager.addAttributes(atributes);
+//    return ResponseEntity.ok(id);
+//  }
+
+  @GetMapping(BASE_URI + "/api/{apiId}")
   @ResponseBody
-  public ResponseEntity<Behaviour> putServiceBehaviour(@PathVariable(name = "serviceId") int id,
-                                                       @RequestParam(name = "responsetime", required = false) Integer responseTimeMS,
-                                                       @RequestParam(name = "scalability", required = false) Integer scalability) {
-    Behaviour behaviour = APIs.getServiceBehaviour(id);
-    if (behaviour == null)
-      ResponseEntity.notFound().build();
-    behaviour.setResponseTimeMS(responseTimeMS);
-    behaviour.setScalability(scalability);
-
-    return ResponseEntity.ok(behaviour);
-  }
-
-  @GetMapping("/stub/manager/service/{serviceId}")
-  @ResponseBody
-  public ResponseEntity<?> getService(@PathVariable(name = "serviceId") Integer id) {
-    return Optional.ofNullable(APIs.getService(id))
+  public ResponseEntity<?> getService(@PathVariable(name = "apiId") Integer apiId) {
+    return Optional.ofNullable(Manager.getService(apiId))
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
-  @GetMapping("/stub/manager/service/{serviceId}/behaviour")
+  @GetMapping(BASE_URI + "/attributes/{attributesId}")
   @ResponseBody
-  public ResponseEntity<?> getBehaviour(@PathVariable(name = "serviceId") Integer id) {
-    return Optional.ofNullable(APIs.getServiceBehaviour(id))
+  public ResponseEntity<?> getAttributes(@PathVariable(name = "attributesId") Integer attributesId) {
+    return Optional.ofNullable(Manager.getAttributes(attributesId))
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
   }
