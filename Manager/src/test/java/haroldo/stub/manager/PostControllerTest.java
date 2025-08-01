@@ -5,11 +5,10 @@ import haroldo.stub.manager.resource.Service;
 import haroldo.stub.manager.response.ManagerError;
 import haroldo.stub.manager.response.ManagerResponse;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 import java.util.Random;
 
-public class ControllerTest {
+public class PostControllerTest {
   EmulateServer server = new EmulateServer();
   Random random = new Random(System.currentTimeMillis());
 
@@ -50,30 +49,5 @@ public class ControllerTest {
     ManagerError managerError = (ManagerError)(server.postServiceBadRequest(service)).getBody();
     assert(managerError.getErrorCode() == 0);
     assert(managerError.getErrorMessage() != null);
-  }
-
-  @Test
-  public void getServiceTest() {
-    String uri = "/add/service/test-getService";
-    int id = random.nextInt(100000);
-    int portNumber = 443;
-    String serviceName = "GET Service";
-    String responseMsg = "This is a GET test!";
-
-    //  Create service.
-    Service service = new Service(id, uri);
-    service.setResponseMessage(responseMsg);
-    service.setPortNumber(portNumber);
-    service.setName(serviceName);
-
-    ManagerResponse managerResponse = (ManagerResponse)(server.postService(service)).getBody();
-    assert(managerResponse.getServiceID() == id);
-
-    Service getResponse = (Service)(server.getService(id)).getBody();
-    assert(getResponse.getId() == id);
-    assert(getResponse.getUri().equals(uri));
-    assert(getResponse.getResponseMessage().equals(responseMsg));
-    assert(getResponse.getName().equals(serviceName));
-    assert(getResponse.getPortNumber() == portNumber);
   }
 }

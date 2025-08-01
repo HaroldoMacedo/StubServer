@@ -20,7 +20,7 @@ public class ManagerController {
   @ResponseBody
   public ResponseEntity<?> postService(@RequestBody Service service) {
     try {
-      Service newService = APIs.addService(service);
+      APIs.addService(service);
       return ResponseEntity.ok(new ManagerResponse(service.getId()));
     } catch (APIsException e) {
       System.err.println("Error: " + e.getMessage());

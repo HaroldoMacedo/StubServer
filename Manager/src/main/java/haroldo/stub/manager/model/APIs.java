@@ -40,10 +40,8 @@ public class APIs {
   }
 
   public static boolean exist(String uri) {
-    if (apis.values().stream().anyMatch(api -> api.getService().getUri().equals(uri)))
-      return true;
-
-    return false;
+    return apis.values().stream()
+            .anyMatch(api -> api.getService().getUri().equals(uri));
   }
 
   public static Service getService(int serviceId) {
