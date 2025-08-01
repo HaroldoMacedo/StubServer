@@ -1,6 +1,7 @@
 package haroldo.stub.manager.controller;
 
 import haroldo.stub.manager.model.APIs;
+import haroldo.stub.manager.model.APIsException;
 import haroldo.stub.manager.resource.Behaviour;
 import haroldo.stub.manager.resource.Service;
 import org.springframework.http.HttpStatus;
@@ -15,12 +16,14 @@ public class ManagerController {
 
   @PostMapping("/stub/manager/service")
   @ResponseBody
-  public ResponseEntity<Integer> putService(@RequestBody Service service) {
-    Service newService = APIs.addOrReplace(service);
-    if (newService == null)
+  public ResponseEntity<Integer> postService(@RequestBody Service service) {
+    try {
+      Service newService = APIs.addOrReplace(service);
+      return ResponseEntity.ok(newService.getId());
+    } catch (APIsException e) {
+      System.err.println("Error: " + e.getMessage());
       return ResponseEntity.badRequest().build();
-
-    return ResponseEntity.ok(newService.getId());
+    }
   }
 
   @GetMapping("/stub/manager/service/{serviceId}")

@@ -1,22 +1,34 @@
 package haroldo.stub.manager.resource;
 
 public class Service {
-  private int id;
+  private final Integer id;
+  private static int nextId = 0;
   private String name = "default";
-  private String uri = "/stub/manager/service/default";
+  private String uri;
   private int portNumber = 80;
   private int responseTimeMS = 100;
   private int scalability = 10;
   private String responseMessage = "Hello World!";
 
-  public static final Service service0 = new Service();
+  public static final Service service0 = new Service("/stub/manager/service/default");
 
-  public int getId() {
-    return id;
+  public Service() {
+    this.id = nextId++;
+    init("/uri-" + this.id);
   }
 
-  public void setId(int id) {
-    this.id = id;
+  public Service(String uri) {
+    this.id = nextId++;
+    init(uri);
+  }
+
+  private void init(String uri) {
+    this.uri = uri;
+    this.name = "Name " + this.id;
+  }
+
+  public Integer getId() {
+    return id;
   }
 
   public String getName() {

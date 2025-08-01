@@ -13,16 +13,22 @@ public class APIs {
     apis.put(0, new API(Service.service0));
   }
 
-  public static void putAPI(Service service, Behaviour behaviour) {
-    apis.put(service.getId(), new API(service, behaviour));
+  public static void putAPI(Service service) throws APIsException {
+    putAPI(service, new Behaviour());
   }
 
-  public static Service addOrReplace(Service service) {
-    if (service.getId() <= 0)
-      return null;
+  public static void putAPI(Service service, Behaviour behaviour) throws APIsException {
+    putAPI(new API(service, behaviour));
+  }
 
-    API api = apis.computeIfAbsent(service.getId(), id -> new API(service));
-    api.setService(service);
+  public static void putAPI(API api) throws APIsException {
+    // TODO: Check existing URI.
+    apis.put(api.getService().getId(), api);
+  }
+
+  public static Service addOrReplace(Service service) throws APIsException {
+    API api = new API(service);
+    putAPI(api);
     return api.getService();
   }
 
