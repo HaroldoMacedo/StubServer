@@ -7,6 +7,8 @@ import haroldo.stub.manager.model.Service;
 import haroldo.stub.manager.resource.API;
 import haroldo.stub.manager.resource.Attribute;
 import haroldo.stub.manager.resource.Resource;
+import haroldo.stub.manager.resource.ResourceId;
+import haroldo.stub.manager.response.ManagerError;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -18,7 +20,7 @@ public class ServerCall implements Server {
 
   @Override
   public Service getService(int id) {
-    ResponseEntity<?> response = callServer("/stub/manager/service/" + id);
+    ResponseEntity<?> response = getServer("/stub/manager/service/" + id);
     assert (response.getStatusCode() == HttpStatus.OK);
     assert (response.hasBody());
 
@@ -27,7 +29,7 @@ public class ServerCall implements Server {
 
   @Override
   public Attribute getAttribute(int id) {
-    ResponseEntity<?> response = callServer("/stub/manager/attribute/" + id);
+    ResponseEntity<?> response = getServer("/stub/manager/attribute/" + id);
     assert (response.getStatusCode() == HttpStatus.OK);
     assert (response.hasBody());
 
@@ -36,14 +38,14 @@ public class ServerCall implements Server {
 
   @Override
   public API getApi(int id) {
-    ResponseEntity<?> response = callServer("/stub/manager/api/" + id);
+    ResponseEntity<?> response = getServer("/stub/manager/api/" + id);
     assert (response.getStatusCode() == HttpStatus.OK);
     assert (response.hasBody());
 
     return (API) getResource(response, API.class);
   }
 
-  private ResponseEntity<?> callServer(String uri) {
+  private ResponseEntity<?> getServer(String uri) {
     ResponseEntity<?> response = null;
     try {
       String url = HTTP_HOST + uri;
@@ -68,4 +70,33 @@ public class ServerCall implements Server {
     }
   }
 
+  @Override
+  public ResourceId startService(int id) {
+    // TODO: Implementation needed
+    return null;
+  }
+
+  @Override
+  public ManagerError startServiceBadRequest(int id) {
+    // TODO: Implementation needed
+    return null;
+  }
+
+  @Override
+  public ResourceId postApi(API api) {
+    // TODO: Implementation needed
+    return null;
+  }
+
+  @Override
+  public ManagerError postApiBadRequest(API api) {
+    // TODO: Implementation needed
+    return null;
+  }
+
+  @Override
+  public ResourceId putAttribute(Attribute attribute) {
+    // TODO: Implementation needed
+    return null;
+  }
 }

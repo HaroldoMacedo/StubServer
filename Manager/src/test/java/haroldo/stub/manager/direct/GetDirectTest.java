@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 public class GetDirectTest implements GetTest {
   private GetTestImpl get = new GetTestImpl(new EmulateServer());
 
-
   @Test
   @Override
   public void getServiceTest() {

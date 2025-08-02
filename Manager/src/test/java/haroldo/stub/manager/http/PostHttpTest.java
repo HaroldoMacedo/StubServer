@@ -1,14 +1,16 @@
-package haroldo.stub.manager.direct;
+package haroldo.stub.manager.http;
 
 import haroldo.stub.manager.PostTest;
+import haroldo.stub.manager.direct.EmulateServer;
+import haroldo.stub.manager.implementation.GetTestImpl;
 import haroldo.stub.manager.implementation.PostTestImpl;
 import haroldo.stub.manager.model.Manager;
 import org.junit.jupiter.api.Test;
 
-public class PostDirectTest implements PostTest {
-  private PostTestImpl post = new PostTestImpl(new EmulateServer());
+public class PostHttpTest implements PostTest {
+  private PostTestImpl post = new PostTestImpl(new ServerCall());
 
-  PostDirectTest() {
+  PostHttpTest() {
     new Manager();  // Instatiated to create initial components Id = 0.
   }
 

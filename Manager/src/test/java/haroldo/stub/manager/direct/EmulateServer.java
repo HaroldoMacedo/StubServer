@@ -5,21 +5,25 @@ import haroldo.stub.manager.controller.ManagerController;
 import haroldo.stub.manager.model.Service;
 import haroldo.stub.manager.resource.API;
 import haroldo.stub.manager.resource.Attribute;
+import haroldo.stub.manager.resource.ResourceId;
+import haroldo.stub.manager.response.ManagerError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class EmulateServer implements Server {
   ManagerController controller = new ManagerController();
 
-  ResponseEntity<?> startService(int serviceId) {
-    return startService(serviceId, HttpStatus.OK);
+  @Override
+  public ResourceId startService(int serviceId) {
+    return (ResourceId) startService(serviceId, HttpStatus.OK).getBody();
   }
 
-  ResponseEntity<?> startServiceBadRequest(int serviceId) {
-    return startService(serviceId, HttpStatus.BAD_REQUEST);
+  @Override
+  public ManagerError startServiceBadRequest(int serviceId) {
+    return (ManagerError)startService(serviceId, HttpStatus.BAD_REQUEST).getBody();
   }
 
-  ResponseEntity<?> startService(int serviceId, HttpStatus code) {
+  private ResponseEntity<?> startService(int serviceId, HttpStatus code) {
     ResponseEntity<?> response = controller.startService(serviceId);
     assert (response.getStatusCode() == code);
     assert (response.hasBody());
@@ -54,12 +58,13 @@ public class EmulateServer implements Server {
     return (API) response.getBody();
   }
 
-  ResponseEntity<?> postApi(API api) {
-    return postApi(api, HttpStatus.OK);
+  @Override
+  public ResourceId postApi(API api) {
+    return (ResourceId)postApi(api, HttpStatus.OK).getBody();
   }
 
-  ResponseEntity<?> postApiBadRequest(API api) {
-    return postApi(api, HttpStatus.BAD_REQUEST);
+  public ManagerError postApiBadRequest(API api) {
+    return (ManagerError)postApi(api, HttpStatus.BAD_REQUEST).getBody();
   }
 
   ResponseEntity<?> postApi(API api, HttpStatus code) {
@@ -70,8 +75,9 @@ public class EmulateServer implements Server {
     return response;
   }
 
-  ResponseEntity<?> putAttribute(Attribute attribute) {
-    return putAttribute(attribute, HttpStatus.OK);
+  @Override
+  public ResourceId putAttribute(Attribute attribute) {
+    return (ResourceId)putAttribute(attribute, HttpStatus.OK).getBody();
   }
 
   ResponseEntity<?> putAttribute(Attribute attribute, HttpStatus code) {
