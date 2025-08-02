@@ -1,9 +1,9 @@
 package haroldo.stub.manager.resource;
 
-public class API implements ResourceId {
+public class API implements Resource {
   private static int nextId = 0;
 
-  private final Resource resource;
+  private final ResourceId resourceId;
   private String name = "default";
   private String uri;
 
@@ -16,7 +16,7 @@ public class API implements ResourceId {
   }
 
   public API(String uri, String name) {
-    this.resource = new Resource("api", nextId++);
+    this.resourceId = new ResourceId("api", nextId++);
     this.uri = uri;
     this.name = name;
   }
@@ -38,8 +38,8 @@ public class API implements ResourceId {
   }
 
   @Override
-  public Resource getResource() {
-    return resource;
+  public ResourceId getResourceId() {
+    return resourceId;
   }
 
   @Override

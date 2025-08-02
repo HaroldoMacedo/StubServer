@@ -1,9 +1,9 @@
 package haroldo.stub.manager.resource;
 
-public class Attribute implements ResourceId {
+public class Attribute implements Resource {
   private static int nextId = 0;
 
-  private final Resource resource;
+  private final ResourceId resourceId;
   public static final String ATTRIBUTES_DEFAULT_MESSAGE = "{message: Hello World!}";
   private int portNumber = 80;
   private String responseMessage = ATTRIBUTES_DEFAULT_MESSAGE;
@@ -11,7 +11,7 @@ public class Attribute implements ResourceId {
   private int scalability = 10;
 
   public Attribute() {
-    this.resource = new Resource("attribute", nextId++);
+    this.resourceId = new ResourceId("attribute", nextId++);
   }
 
   //  public Attribute(int id) throws Exception {
@@ -21,8 +21,8 @@ public class Attribute implements ResourceId {
 //  }
 //
   @Override
-  public Resource getResource() {
-    return resource;
+  public ResourceId getResourceId() {
+    return resourceId;
   }
 
   public String getResponseMessage() {
@@ -61,11 +61,11 @@ public class Attribute implements ResourceId {
 
   @Override
   public boolean equals(Object obj) {
-    return resource.equals(obj);
+    return resourceId.equals(obj);
   }
 
   @Override
   public int hashCode() {
-    return resource.hashCode();
+    return resourceId.hashCode();
   }
 }

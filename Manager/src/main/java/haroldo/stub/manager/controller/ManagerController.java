@@ -23,7 +23,7 @@ public class ManagerController {
   public ResponseEntity<?> startService(@PathVariable(name = "serviceId") int serviceId) {
     try {
       Service responseService = Manager.startService(serviceId);
-      return ResponseEntity.ok(new ManagerResponse(responseService).getResourceId().getResource());
+      return ResponseEntity.ok(new ManagerResponse(responseService).getResource().getResourceId());
     } catch (ServicesException e) {
       System.err.println("Error: " + e.getMessage());
       return ResponseEntity.badRequest().body(new ManagerError(e.getMessage()));
@@ -35,7 +35,7 @@ public class ManagerController {
   public ResponseEntity<?> postApi(@RequestBody API api) {
     try {
       API responseApi = Manager.addApi(api);
-      return ResponseEntity.ok(new ManagerResponse(responseApi).getResourceId().getResource());
+      return ResponseEntity.ok(new ManagerResponse(responseApi).getResource().getResourceId());
     } catch (ServicesException e) {
       System.err.println("Error: " + e.getMessage());
       return ResponseEntity.badRequest().body(new ManagerError(e.getMessage()));
@@ -48,7 +48,7 @@ public class ManagerController {
     if (attribute == null)
       ResponseEntity.notFound().build();
     Attribute responseAttribute = Manager.putAttribute(attribute);
-    return ResponseEntity.ok(new ManagerResponse(responseAttribute).getResourceId().getResource());
+    return ResponseEntity.ok(new ManagerResponse(responseAttribute).getResource().getResourceId());
   }
 
   @GetMapping(BASE_URI + "/service/{serviceId}")

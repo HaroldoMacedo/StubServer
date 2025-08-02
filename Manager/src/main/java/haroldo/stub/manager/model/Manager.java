@@ -2,7 +2,7 @@ package haroldo.stub.manager.model;
 
 import haroldo.stub.manager.resource.Attribute;
 import haroldo.stub.manager.resource.API;
-import haroldo.stub.manager.resource.ResourceId;
+import haroldo.stub.manager.resource.Resource;
 
 import java.util.*;
 
@@ -51,9 +51,9 @@ public class Manager {
     return (API)findFromIdInList(apis, apiId);
   }
 
-  public static <T extends ResourceId> ResourceId findFromIdInList(Set<T> set, int id) {
+  public static <T extends Resource> Resource findFromIdInList(Set<T> set, int id) {
     return set.stream()
-            .filter(resourceId -> resourceId.getResource().getId() == id)
+            .filter(resourceId -> resourceId.getResourceId().getId() == id)
             .findFirst()
             .orElse(null);
   }
