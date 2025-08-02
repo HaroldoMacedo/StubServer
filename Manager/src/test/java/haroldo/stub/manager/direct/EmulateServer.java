@@ -1,12 +1,14 @@
-package haroldo.stub.manager;
+package haroldo.stub.manager.direct;
 
+import haroldo.stub.manager.Server;
 import haroldo.stub.manager.controller.ManagerController;
+import haroldo.stub.manager.model.Service;
 import haroldo.stub.manager.resource.API;
 import haroldo.stub.manager.resource.Attribute;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class EmulateServer {
+public class EmulateServer implements Server {
   ManagerController controller = new ManagerController();
 
   ResponseEntity<?> startService(int serviceId) {
@@ -25,28 +27,31 @@ public class EmulateServer {
     return response;
   }
 
-  ResponseEntity<?> getService(int serviceId) {
+  @Override
+  public Service getService(int serviceId) {
     ResponseEntity<?> response = controller.getService(serviceId);
     assert (response.getStatusCode() == HttpStatus.OK);
     assert (response.hasBody());
 
-    return response;
+    return (Service) response.getBody();
   }
 
-  ResponseEntity<?> getAttribute(int attributesId) {
+  @Override
+  public Attribute getAttribute(int attributesId) {
     ResponseEntity<?> response = controller.getAttributes(attributesId);
     assert (response.getStatusCode() == HttpStatus.OK);
     assert (response.hasBody());
 
-    return response;
+    return (Attribute) response.getBody();
   }
 
-  ResponseEntity<?> getApi(int apiId) {
+  @Override
+  public API getApi(int apiId) {
     ResponseEntity<?> response = controller.getApi(apiId);
     assert (response.getStatusCode() == HttpStatus.OK);
     assert (response.hasBody());
 
-    return response;
+    return (API) response.getBody();
   }
 
   ResponseEntity<?> postApi(API api) {

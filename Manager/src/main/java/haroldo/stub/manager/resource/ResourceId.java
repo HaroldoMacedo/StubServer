@@ -6,6 +6,12 @@ public class ResourceId {
   private final String resourceName;
   private final String hyperlink;
 
+  public ResourceId() {
+    this.id = 0;
+    this.resourceName = "default";
+    this.hyperlink = "/default";
+  }
+
   public ResourceId(String resourceName, int id) {
     this.id = id;
     this.resourceName = resourceName;

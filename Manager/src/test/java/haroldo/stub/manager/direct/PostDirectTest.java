@@ -1,4 +1,4 @@
-package haroldo.stub.manager;
+package haroldo.stub.manager.direct;
 
 import haroldo.stub.manager.model.Manager;
 import haroldo.stub.manager.resource.API;
@@ -7,10 +7,10 @@ import haroldo.stub.manager.resource.ResourceId;
 import haroldo.stub.manager.response.ManagerError;
 import org.junit.jupiter.api.Test;
 
-public class PostControllerTest {
+public class PostDirectTest {
   EmulateServer server = new EmulateServer();
 
-  public PostControllerTest() {
+  public PostDirectTest() {
     new Manager();  // Instatiated to create initial components Id = 0.
   }
 

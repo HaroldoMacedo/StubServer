@@ -1,16 +1,20 @@
-package haroldo.stub.manager;
+package haroldo.stub.manager.implementation;
 
+import haroldo.stub.manager.GetTest;
+import haroldo.stub.manager.Server;
 import haroldo.stub.manager.model.Service;
 import haroldo.stub.manager.resource.API;
 import haroldo.stub.manager.resource.Attribute;
-import org.junit.jupiter.api.Test;
 
-public class GetControllerTest {
-  EmulateServer server = new EmulateServer();
+public class GetTestImpl implements GetTest {
+  private final Server server;
+  public GetTestImpl(Server server) {
+    this.server = server;
+  }
 
-  @Test
+  @Override
   public void getServiceTest() {
-    Service service = (Service) (server.getService(0)).getBody();
+    Service service = server.getService(0);
     assert (service.getResourceId().getId() == 0);
     assert (service.getResourceId().getResourceName().equals("service"));
 
@@ -27,9 +31,9 @@ public class GetControllerTest {
     assert (attribute.getResponseTimeMS() == 100);
   }
 
-  @Test
+  @Override
   public void getAttributeTest() {
-    Attribute getResponse = (Attribute) (server.getAttribute(0).getBody());
+    Attribute getResponse = server.getAttribute(0);
     assert (getResponse.getResourceId().getResourceName().equals("attribute"));
     assert (getResponse.getResponseMessage().equals(Attribute.ATTRIBUTES_DEFAULT_MESSAGE));
     assert (getResponse.getPortNumber() == 80);
@@ -37,45 +41,12 @@ public class GetControllerTest {
     assert (getResponse.getScalability() == 10);
   }
 
-  @Test
+  @Override
   public void getApiTest() {
-    API getResponse = (API) (server.getApi(0).getBody());
+    API getResponse = server.getApi(0);
     assert (getResponse.getResourceId().getResourceName().equals("api"));
     assert (getResponse.getResourceId().getId() == 0);
     assert (getResponse.getUri().equals("/default"));
     assert (getResponse.getName().equals("api-0"));
   }
-
-
-//  private API addDefaultTestApi() {
-//    String uri = "/add/api/test-getApi";
-//    int id = random.nextInt(100000);
-//    int portNumber = 443;
-//    String apiName = "GET Api";
-//    String responseMsg = "This is a GET test!";
-//
-//    //  Create api.
-//    API api = new API(id, uri);
-//    api.setName(apiName);
-//
-//    ManagerResponse managerResponse = (ManagerResponse)(server.postApi(api)).getBody();
-//    assert(managerResponse.getApiID() == id);
-//
-//    return api;
-//  }
-
-//  private API addDefaultTestApiAttributes(int AttributesId) {
-//    String uri = "/add/api/test-getApi";
-//    int id = random.nextInt(100000);
-//    String apiName = "GET Api";
-//
-//    //  Create api.
-//    API api = new API(id, uri);
-//    api.setName(apiName);
-//
-//    ManagerResponse managerResponse = (ManagerResponse)(server.startApi(api)).getBody();
-//    assert(managerResponse. == id);
-//
-//    return api;
-//  }
 }

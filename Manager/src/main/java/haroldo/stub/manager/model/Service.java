@@ -12,6 +12,10 @@ public class Service implements Resource {
   private API api;
   private Attribute attribute;
 
+  public Service(){
+    this.resourceId = new ResourceId();
+  }
+
   Service(API api, Attribute attribute){
     this.resourceId = new ResourceId("service", nextId++);
     this.api = api;
