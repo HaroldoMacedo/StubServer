@@ -3,7 +3,10 @@ package haroldo.stub.manager.controller;
 import haroldo.stub.manager.model.Manager;
 import haroldo.stub.manager.model.Service;
 import haroldo.stub.manager.model.ServicesException;
+import haroldo.stub.manager.resource.API;
+import haroldo.stub.manager.resource.Attribute;
 import haroldo.stub.manager.response.ManagerError;
+import haroldo.stub.manager.response.ManagerResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,46 +22,53 @@ public class ManagerController {
   @ResponseBody
   public ResponseEntity<?> startService(@PathVariable(name = "serviceId") int serviceId) {
     try {
-      Manager.startService(serviceId);
-      return ResponseEntity.ok("{status: \"OK\"");
+      Service responseService = Manager.startService(serviceId);
+      return ResponseEntity.ok(new ManagerResponse(responseService).getResourceId().getResource());
     } catch (ServicesException e) {
       System.err.println("Error: " + e.getMessage());
       return ResponseEntity.badRequest().body(new ManagerError(e.getMessage()));
     }
   }
-//
-//  @PostMapping(BASE_URI + "/service")
-//  @ResponseBody
-//  public ResponseEntity<?> postService(@RequestBody Service service) {
-//    try {
-//      Manager.addService(service.getApi(), service.getAttributes());
-//      return ResponseEntity.ok(new ManagerResponse(serviceId));
-//    } catch (ServicesException e) {
-//      System.err.println("Error: " + e.getMessage());
-//      return ResponseEntity.badRequest().body(new ManagerError(e.getMessage()));
-//    }
-//  }
 
-
-//  @PutMapping(BASE_URI + "/attributes/{attributesId}")
-//  @ResponseBody
-//  public ResponseEntity<Integer> putAttributes(@PathVariable(name = "attributesId") int attributesId,
-//                                                @RequestBody Atributes atributes) {
-//    if (atributes == null)
-//      ResponseEntity.notFound().build();
-//    Integer id = Manager.addAttributes(atributes);
-//    return ResponseEntity.ok(id);
-//  }
-
-  @GetMapping(BASE_URI + "/api/{apiId}")
+  @PostMapping(BASE_URI + "/api")
   @ResponseBody
-  public ResponseEntity<?> getService(@PathVariable(name = "apiId") Integer apiId) {
-    return Optional.ofNullable(Manager.getService(apiId))
+  public ResponseEntity<?> postApi(@RequestBody API api) {
+    try {
+      API responseApi = Manager.addApi(api);
+      return ResponseEntity.ok(new ManagerResponse(responseApi).getResourceId().getResource());
+    } catch (ServicesException e) {
+      System.err.println("Error: " + e.getMessage());
+      return ResponseEntity.badRequest().body(new ManagerError(e.getMessage()));
+    }
+  }
+
+  @PutMapping(BASE_URI + "/attribute")
+  @ResponseBody
+  public ResponseEntity<?> putAttribute(@RequestBody Attribute attribute) {
+    if (attribute == null)
+      ResponseEntity.notFound().build();
+    Attribute responseAttribute = Manager.putAttribute(attribute);
+    return ResponseEntity.ok(new ManagerResponse(responseAttribute).getResourceId().getResource());
+  }
+
+  @GetMapping(BASE_URI + "/service/{serviceId}")
+  @ResponseBody
+  public ResponseEntity<?> getService(@PathVariable(name = "serviceId") Integer serviceId) {
+    return Optional.ofNullable(Manager.getService(serviceId))
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
-  @GetMapping(BASE_URI + "/attributes/{attributesId}")
+  @GetMapping(BASE_URI + "/api/{apiId}")
+  @ResponseBody
+  public ResponseEntity<?> getApi(@PathVariable(name = "apiId") Integer apiId) {
+    return Optional.ofNullable(Manager.getApi(apiId))
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
+  }
+
+
+  @GetMapping(BASE_URI + "/attribute/{attributesId}")
   @ResponseBody
   public ResponseEntity<?> getAttributes(@PathVariable(name = "attributesId") Integer attributesId) {
     return Optional.ofNullable(Manager.getAttributes(attributesId))

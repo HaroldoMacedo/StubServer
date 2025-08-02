@@ -1,38 +1,51 @@
 package haroldo.stub.manager;
 
-import haroldo.stub.manager.resource.API;
-import haroldo.stub.manager.resource.Attributes;
 import haroldo.stub.manager.model.Service;
+import haroldo.stub.manager.resource.API;
+import haroldo.stub.manager.resource.Attribute;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
 public class GetControllerTest {
   EmulateServer server = new EmulateServer();
-  Random random = new Random(System.currentTimeMillis());
 
   @Test
   public void getServiceTest() {
-    Service getResponse = (Service)(server.getService(0)).getBody();
-    assert(getResponse.getId() == 0);
-    API api = getResponse.getApi();
-    assert(api.getId() == 0);
-    assert(api.getUri().equals("/default"));
-    assert(api.getName().equals("api-0"));
-    Attributes attributes = getResponse.getAttributes();
-    assert(attributes.getResponseMessage().equals(Attributes.ATTRIBUTES_DEFAULT_MESSAGE));
-    assert(attributes.getPortNumber() == 80);
-    assert(attributes.getScalability() == 10);
-    assert(attributes.getResponseTimeMS() == 100);
+    Service service = (Service) (server.getService(0)).getBody();
+    assert (service.getResource().getId() == 0);
+    assert (service.getResource().getResourceName().equals("service"));
+
+    API api = service.getApi();
+    assert (api.getResource().getId() == 0);
+    assert (api.getResource().getResourceName().equals("api"));
+    assert (api.getUri().equals("/default"));
+    assert (api.getName().equals("api-0"));
+    Attribute attribute = service.getAttributes();
+    assert (attribute.getResource().getResourceName().equals("attribute"));
+    assert (attribute.getResponseMessage().equals(Attribute.ATTRIBUTES_DEFAULT_MESSAGE));
+    assert (attribute.getPortNumber() == 80);
+    assert (attribute.getScalability() == 10);
+    assert (attribute.getResponseTimeMS() == 100);
   }
 
   @Test
-  public void getApiAttributesTest() {
-    Attributes getResponse = (Attributes)(server.getAttributes(0).getBody());
-    assert(getResponse.getResponseMessage().equals(Attributes.ATTRIBUTES_DEFAULT_MESSAGE));
-    assert(getResponse.getPortNumber() == 80);
-    assert(getResponse.getResponseTimeMS() == 100);
-    assert(getResponse.getScalability() == 10);
+  public void getAttributeTest() {
+    Attribute getResponse = (Attribute) (server.getAttribute(0).getBody());
+    assert (getResponse.getResource().getResourceName().equals("attribute"));
+    assert (getResponse.getResponseMessage().equals(Attribute.ATTRIBUTES_DEFAULT_MESSAGE));
+    assert (getResponse.getPortNumber() == 80);
+    assert (getResponse.getResponseTimeMS() == 100);
+    assert (getResponse.getScalability() == 10);
+  }
+
+  @Test
+  public void getApiTest() {
+    API getResponse = (API) (server.getApi(0).getBody());
+    assert (getResponse.getResource().getResourceName().equals("api"));
+    assert (getResponse.getResource().getId() == 0);
+    assert (getResponse.getUri().equals("/default"));
+    assert (getResponse.getName().equals("api-0"));
   }
 
 

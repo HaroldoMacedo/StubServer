@@ -1,22 +1,26 @@
 package haroldo.stub.manager.model;
 
 import haroldo.stub.manager.resource.API;
-import haroldo.stub.manager.resource.Attributes;
+import haroldo.stub.manager.resource.Attribute;
+import haroldo.stub.manager.resource.Resource;
+import haroldo.stub.manager.resource.ResourceId;
 
-public class Service {
-  private final int id;
+public class Service implements ResourceId {
   private static int nextId = 0;
-  private API api;
-  private Attributes attributes;
 
-  Service(API api, Attributes attributes){
-    this.id = nextId++;
+  private final Resource resource;
+  private API api;
+  private Attribute attribute;
+
+  Service(API api, Attribute attribute){
+    this.resource = new Resource("service", nextId++);
     this.api = api;
-    this.attributes = attributes;
+    this.attribute = attribute;
   }
 
-  public int getId() {
-    return id;
+  @Override
+  public Resource getResource() {
+    return resource;
   }
 
   public API getApi() {
@@ -27,11 +31,21 @@ public class Service {
     this.api = api;
   }
 
-  public Attributes getAttributes() {
-    return attributes;
+  public Attribute getAttributes() {
+    return attribute;
   }
 
-  public void setAttributes(Attributes attributes) {
-    this.attributes = attributes;
+  public void setAttributes(Attribute attribute) {
+    this.attribute = attribute;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return resource.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return resource.hashCode();
   }
 }

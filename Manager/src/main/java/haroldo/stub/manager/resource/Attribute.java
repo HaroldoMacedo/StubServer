@@ -1,28 +1,28 @@
 package haroldo.stub.manager.resource;
 
-public class Attributes {
-  public static final String ATTRIBUTES_DEFAULT_MESSAGE = "{message: Hello World!}";
-  private final Integer id;
+public class Attribute implements ResourceId {
   private static int nextId = 0;
 
+  private final Resource resource;
+  public static final String ATTRIBUTES_DEFAULT_MESSAGE = "{message: Hello World!}";
   private int portNumber = 80;
   private String responseMessage = ATTRIBUTES_DEFAULT_MESSAGE;
   private int responseTimeMS = 100;
   private int scalability = 10;
 
-  public Attributes() {
-    this.id = nextId++;
+  public Attribute() {
+    this.resource = new Resource("attribute", nextId++);
   }
 
-  public Attributes(int id) {
-    if (id > 0)
-      this.id = id;
-    else
-      this.id = nextId++;
-  }
-
-  public Integer getId() {
-    return id;
+  //  public Attribute(int id) throws Exception {
+//    super("attribute", id);
+//    if (id <= 0)
+//      throw new Exception("");
+//  }
+//
+  @Override
+  public Resource getResource() {
+    return resource;
   }
 
   public String getResponseMessage() {
@@ -57,5 +57,15 @@ public class Attributes {
   public void setScalability(Integer scalability) {
     if (scalability == null) return;
     this.scalability = scalability;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return resource.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return resource.hashCode();
   }
 }

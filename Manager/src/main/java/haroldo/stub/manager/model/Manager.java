@@ -1,72 +1,64 @@
 package haroldo.stub.manager.model;
 
-import haroldo.stub.manager.resource.Attributes;
+import haroldo.stub.manager.resource.Attribute;
 import haroldo.stub.manager.resource.API;
+import haroldo.stub.manager.resource.ResourceId;
 
 import java.util.*;
 
 public class Manager {
   private static final Map<Integer, Service> services = new HashMap<>();
-  private static final List<API> apis = new ArrayList<>();
-  private static final List<Attributes> attributes = new ArrayList<>();
-  private static int nextServiceId = 1;
+  private static final Set<API> apis = new HashSet<>();
+  private static final Set<Attribute> attributes = new HashSet<>();
 
   static {
     API api = new API("/default");
-    Attributes atr = new Attributes();
+    Attribute atr = new Attribute();
 
     services.put(0, new Service(api,atr));
     apis.add(api);
     attributes.add(atr);
   }
 
-  public static void startService(int serviceId) throws ServicesException {
+  public static Service startService(int serviceId) throws ServicesException {
     Service service = getService(serviceId);
     if (service == null)
       throw new ServicesException("Service id = '" + serviceId + "' does not exist");
+    return service;
   }
 
-//  public static API addService(int apiId, int attributesId) throws ServicesException {
-//    Service service = new Service(api, attributes);
-//    addService(service);
-//    return service.getApi();
-//  }
-//
-//  private static void addService(Service service) throws ServicesException {
-//    if (exist(service.getApi().getUri()))
-//      throw new ServicesException("URI '" + service.getApi().getUri() + "' already in use!");
-//    services.put(nextServiceId++, service);
-//  }
-//
-//  private static Integer addAttributes(Atributes atributes) {
-//    this.atributes.;
-//
-//  }
+  public static API addApi(String uri) throws ServicesException {
+    return addApi(new API(uri));
+  }
 
-  public static Attributes getAttributes(int attributesId) {
-    return attributes.stream()
-            .filter(atr -> atr.getId() == attributesId)
-            .findAny()
+  public static API addApi(API api) throws ServicesException {
+    if (apis.add(api) == false)
+      throw new ServicesException("API with URI '" + api.getUri() + "' already exists!");
+    return api;
+  }
+
+  public static Attribute putAttribute(Attribute attribute) {
+    attributes.remove(attribute);
+    attributes.add(attribute);
+    return attribute;
+  }
+
+  public static Attribute getAttributes(int attributesId) {
+    return (Attribute)findFromIdInList(attributes, attributesId);
+  }
+
+  public static API getApi(int apiId) {
+    return (API)findFromIdInList(apis, apiId);
+  }
+
+  public static <T extends ResourceId> ResourceId findFromIdInList(Set<T> set, int id) {
+    return set.stream()
+            .filter(resourceId -> resourceId.getResource().getId() == id)
+            .findFirst()
             .orElse(null);
   }
 
   public static Service getService(Integer serviceId) {
     return services.get(serviceId);
   }
-
-  public static boolean exist(String uri) {
-    return services.values().stream()
-            .anyMatch(api -> api.getApi().getUri().equals(uri));
-  }
-
-  public static Service getService(int serviceId) {
-    return services.get(serviceId);
-  }
-
-  public static Attributes getServiceAttributes(int serviceId) {
-    return Optional.ofNullable(services.get(serviceId))
-            .map(Service::getAttributes)
-            .orElse(null);
-  }
-
 }

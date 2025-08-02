@@ -1,7 +1,8 @@
 package haroldo.stub.manager;
 
-import haroldo.stub.manager.controller.ManagerController;
+import haroldo.stub.manager.model.Manager;
 import haroldo.stub.manager.resource.API;
+import haroldo.stub.manager.resource.Attribute;
 import haroldo.stub.manager.response.ManagerError;
 import haroldo.stub.manager.response.ManagerResponse;
 import org.junit.jupiter.api.Test;
@@ -10,49 +11,94 @@ import java.util.Random;
 
 public class PostControllerTest {
   EmulateServer server = new EmulateServer();
-  Random random = new Random(System.currentTimeMillis());
+
+  public PostControllerTest() {
+    new Manager();  // Instatiated to create initial components Id = 0.
+  }
 
   @Test
   public void startServiceTest() {
-    server.startService(0);
+    ManagerResponse response = (ManagerResponse)(server.startService(0).getBody());
+    assert (response.getResourceId().getResource().getId() == 0);
+    assert (response.getResourceId().getResource().getResourceName().equals("service"));
   }
 
-//  @Test
-//  public void addServiceTest() {
-//    String uri = "/add/service/test-addservice";
-//    int id = random.nextInt(100000);
-//    API service = new API(id, uri);
-//
-//    ManagerResponse managerResponse = (ManagerResponse)(server.postService(service)).getBody();
-//    assert(managerResponse.getServiceID() == id);
-//  }
-//
-//  @Test
-//  public void add10ServicesTest() {
-//    String uri = "/add/service/test-addservices";
-//
-//    for (int i = 0; i < 10; i++) {
-//      int id = random.nextInt(100000);
-//      API service = new API(id + i, uri + id + i);
-//      ManagerResponse managerResponse = (ManagerResponse)(server.postService(service)).getBody();
-//      assert (managerResponse.getServiceID() == id + i);
-//    }
-//  }
-//
-//  @Test
-//  public void duplicatedUriTest() {
-//    String uri = "/add/service/test-duplicatedUri";
-//    int id = random.nextInt(100000);
-//    API service = new API(id, uri);
-//    ManagerController controller = new ManagerController();
-//
-//    //  First POST.
-//    ManagerResponse managerResponse = (ManagerResponse)(server.postService(service)).getBody();
-//    assert(managerResponse.getServiceID() == id);
-//
-//    //  Second POST.
-//    ManagerError managerError = (ManagerError)(server.postServiceBadRequest(service)).getBody();
-//    assert(managerError.getErrorCode() == 0);
-//    assert(managerError.getErrorMessage() != null);
-//  }
+  @Test
+  public void startUnexistingServiceTest() {
+    ManagerError response = (ManagerError)(server.startServiceBadRequest(54321).getBody());
+//    assert (response.getErrorCode() > 0); //  TODO: Create response error codes.
+    assert (response.getErrorMessage() != null);
+  }
+
+  @Test
+  public void startImpossibleIdServiceTest() {
+    ManagerError response = (ManagerError)(server.startServiceBadRequest(-1).getBody());
+//    assert (response.getErrorCode() > 0); //  TODO: Create response error codes.
+    assert (response.getErrorMessage() != null);
+  }
+
+  @Test
+  public void addApi0Test() {
+    String uri = "/default";
+    API api = new API(uri);
+
+    ManagerError managerError = (ManagerError)(server.postApiBadRequest(api)).getBody();
+//    assert (response.getErrorCode() > 0); //  TODO: Create response error codes.
+    assert(managerError.getErrorMessage() != null);
+  }
+
+  @Test
+  public void addApiTest() {
+    String uri = "/add/service/test-addservice";
+    API api = new API(uri);
+
+    ManagerResponse response = (ManagerResponse)(server.postApi(api)).getBody();
+    assert (response.getResourceId().getResource().getResourceName().equals("api"));
+  }
+
+  @Test
+  public void add10ApisTest() {
+    String uri = "/add/service/test-addservices";
+
+    for (int i = 0; i < 10; i++) {
+      API api = new API(uri + i);
+      ManagerResponse response = (ManagerResponse)(server.postApi(api)).getBody();
+      assert (response.getResourceId().getResource().getResourceName().equals("api"));
+    }
+  }
+
+  @Test
+  public void addDuplicatedApiTest() {
+    String uri = "/add/service/test-duplicatedUri";
+    API api = new API(uri);
+
+    //  Adding API.
+    ManagerResponse response = (ManagerResponse)(server.postApi(api)).getBody();
+    assert (response.getResourceId().getResource().getResourceName().equals("api"));
+
+    //  Trying to add the same API (URI).
+    api = new API(uri);
+    ManagerError managerError = (ManagerError)(server.postApiBadRequest(api)).getBody();
+//    assert (response.getErrorCode() > 0); //  TODO: Create response error codes.
+    assert(managerError.getErrorMessage() != null);
+  }
+
+  @Test
+  public void addAttributeTest() {
+    Attribute attribute = new Attribute();
+
+    ManagerResponse response = (ManagerResponse)(server.putAttribute(attribute)).getBody();
+    assert (response.getResourceId().getResource().getResourceName().equals("attribute"));
+  }
+
+  @Test
+  public void addDuplicatedAttributeTest() {
+    Attribute attribute = new Attribute();
+
+    ManagerResponse response = (ManagerResponse)(server.putAttribute(attribute)).getBody();
+    assert (response.getResourceId().getResource().getResourceName().equals("attribute"));
+    response = (ManagerResponse)(server.putAttribute(attribute)).getBody();
+    assert (response.getResourceId().getResource().getResourceName().equals("attribute"));
+  }
+
 }

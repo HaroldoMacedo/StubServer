@@ -1,17 +1,16 @@
 package haroldo.stub.manager.response;
 
+import haroldo.stub.manager.resource.ResourceId;
+
 public class ManagerResponse {
-  private Integer serviceID;
+  private final ResourceId resourceId;
 
-  public ManagerResponse(Integer serviceID) {
-    this.serviceID = serviceID;
+  public ManagerResponse(ResourceId resourceId) {
+    this.resourceId = resourceId;
   }
 
-  public Integer getServiceID() {
-    return serviceID;
-  }
-
-  public void setServiceID(Integer serviceID) {
-    this.serviceID = serviceID;
+  public ResourceId getResourceId() {
+    return resourceId;
   }
 }
+
