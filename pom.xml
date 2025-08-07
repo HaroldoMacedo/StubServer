@@ -10,6 +10,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>Manager</module>
+        <module>Workers</module>
+        <module>Config</module>
     </modules>
 
     <properties>
