@@ -15,7 +15,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.Optional;
 
 @RestController
-public class ManagerController {
+public class ConfigController {
   public static final String BASE_URI = "/stub/manager";
 
   @PutMapping(BASE_URI + "/service/{serviceId}")

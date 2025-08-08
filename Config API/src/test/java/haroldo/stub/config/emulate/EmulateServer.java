@@ -1,7 +1,7 @@
 package haroldo.stub.config.emulate;
 
 import haroldo.stub.config.Server;
-import haroldo.stub.config.controller.ManagerController;
+import haroldo.stub.config.controller.ConfigController;
 import haroldo.stub.config.model.Service;
 import haroldo.stub.config.resource.API;
 import haroldo.stub.config.resource.Attribute;
@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class EmulateServer implements Server {
-  ManagerController controller = new ManagerController();
+  ConfigController controller = new ConfigController();
 
   @Override
   public ResourceId startService(int serviceId) {
