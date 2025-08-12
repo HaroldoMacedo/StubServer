@@ -2,11 +2,11 @@ package haroldo.stub.api;
 
 public class ApiImpl implements Api {
     private final String uri;
-    private final int maxConcurrency;
+    private final int maxThroughPutPerSecond;
 
-    public ApiImpl(String uri, int maxConcurrency) {
+    public ApiImpl(String uri, int maxThroughPutPerSecond) {
         this.uri = uri;
-        this.maxConcurrency = maxConcurrency;
+        this.maxThroughPutPerSecond = maxThroughPutPerSecond;
     }
 
     @Override
@@ -15,7 +15,7 @@ public class ApiImpl implements Api {
     }
 
     @Override
-    public int getMaxConcurrency() {
-        return maxConcurrency;
+    public int getMaxThroughPutPerSecond() {
+        return maxThroughPutPerSecond;
     }
 }

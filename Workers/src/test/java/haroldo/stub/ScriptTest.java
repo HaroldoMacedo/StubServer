@@ -16,8 +16,8 @@ public class ScriptTest {
         Server server = new Server(8080);
         server.startServer();
 
-        Api helloApi = new ApiImpl("/hello", 100);
-        ApiResponse helloApiResponse = new DefaultApiResponse("Hello World!", 250);
+        Api helloApi = new ApiImpl("/hello", 20);
+        ApiResponse helloApiResponse = new DefaultApiResponse("Hello World!", 200);
         Application helloApplication = new DefaultApplication("Hello World", helloApi, helloApiResponse);
 
         server.addOrReplace(helloApplication);

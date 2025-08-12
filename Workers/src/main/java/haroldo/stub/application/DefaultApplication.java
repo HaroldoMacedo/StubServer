@@ -14,7 +14,7 @@ public class DefaultApplication implements Application {
     public DefaultApplication(String name, Api api, ApiResponse apiResponse) {
         this.name = name;
         this.api = api;
-        this.httpHandler = new DefaultHttpHandler(api.getMaxConcurrency(), apiResponse);
+        this.httpHandler = new DefaultHttpHandler(api.getMaxThroughPutPerSecond(), apiResponse);
         hashCode = api.getUri().chars().sum();
     }
 
