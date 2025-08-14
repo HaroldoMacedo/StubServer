@@ -1,20 +1,23 @@
 package haroldo.stub.worker;
 
 
+import com.sun.net.httpserver.HttpServer;
 import haroldo.stub.application.Application;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Server {
     private final int port;
+    private Listener listener;
     private final List<Application> apiList = new ArrayList<>();
-    private final Listener listener;
+    private final static Map<Integer, HttpServer> httpServers = new HashMap<>();
 
     public Server(int port) {
         this.port = port;
-        this.listener = new Listener(port);
     }
 
     public void addOrReplace(Application api) {
@@ -24,6 +27,7 @@ public class Server {
 
     public void startServer() throws ServerException {
         try {
+            listener = new Listener(port);
             listener.startListener();
             System.out.println("Server started!");
         } catch (IOException e) {
@@ -36,10 +40,8 @@ public class Server {
             System.out.println("Stopping server");
             listener.stopListener();
             System.out.println("Server stopped!");
-        } catch (ListenerException e) {
+        } catch (ListenerException | IOException e) {
             throw new ServerException(e.getMessage());
-        } catch (IOException e) {
-            throw new ServerException("Port already in use");
         }
     }
 
@@ -53,7 +55,7 @@ public class Server {
         } catch (ListenerException e) {
             throw new ServerException(e.getMessage());
         }
-        System.out.println("Application '" + appName +"' started!");
+        System.out.println("Application '" + appName + "' started!");
     }
 
     public void stopApplication(String appName) throws ServerException {
@@ -63,7 +65,7 @@ public class Server {
 
         try {
             listener.stopApplication(application.getApi().getUri());
-        } catch (ListenerException e){
+        } catch (ListenerException e) {
             throw new ServerException(e.getMessage());
         }
         System.out.println("Application '" + appName + "' stopped!");
