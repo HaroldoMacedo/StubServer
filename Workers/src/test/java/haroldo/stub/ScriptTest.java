@@ -12,11 +12,11 @@ import org.junit.jupiter.api.Test;
 
 public class ScriptTest {
     @Test
-    public void run5MinutesScriptTest()  throws ServerException, InterruptedException {
+    public void run5MinutesScriptTest() throws ServerException, InterruptedException {
         Server server = new Server(8080);
         server.startServer();
 
-        Api helloApi = new ApiImpl("/hello", 20);
+        Api helloApi = new ApiImpl("/hello", 100);
         ApiResponse helloApiResponse = new DefaultApiResponse("Hello World!", 200);
         Application helloApplication = new DefaultApplication("Hello World", helloApi, helloApiResponse);
 
@@ -27,6 +27,5 @@ public class ScriptTest {
 
         server.stopApplication("Hello World");
         server.stopServer();
-   }
-
+    }
 }

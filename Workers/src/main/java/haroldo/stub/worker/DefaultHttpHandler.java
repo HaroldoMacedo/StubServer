@@ -83,7 +83,7 @@ public class DefaultHttpHandler implements HttpHandler {
         lastRequestReceivedNanoSec = System.nanoTime();
     }
 
-    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MMM-yy HH:mm:ss.SSS");
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm:ss.SSS");
     private String now() {
         return LocalDateTime.now().format(dateFormat);
     }

@@ -5,16 +5,18 @@ import com.sun.net.httpserver.HttpServer;
 import haroldo.stub.application.Application;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 public class Server {
-    private final int port;
-    private Listener listener;
-    private final List<Application> apiList = new ArrayList<>();
     private final static Map<Integer, HttpServer> httpServers = new HashMap<>();
+
+    private final int port;
+    private final List<Application> apiList = new ArrayList<>();
 
     public Server(int port) {
         this.port = port;
@@ -26,9 +28,19 @@ public class Server {
     }
 
     public void startServer() throws ServerException {
+        System.out.println("Starting server at port " + port);
+
+        HttpServer httpServer = httpServers.get(port);
+        if (httpServer != null)
+            return;
+
         try {
-            listener = new Listener(port);
-            listener.startListener();
+            httpServer = HttpServer.create(new InetSocketAddress(port), 0);
+            httpServers.put(port, httpServer);
+
+            httpServer.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
+            httpServer.start();
+
             System.out.println("Server started!");
         } catch (IOException e) {
             throw new ServerException("Port already in use");
@@ -36,42 +48,56 @@ public class Server {
     }
 
     public void stopServer() throws ServerException {
-        try {
-            System.out.println("Stopping server");
-            listener.stopListener();
-            System.out.println("Server stopped!");
-        } catch (ListenerException | IOException e) {
-            throw new ServerException(e.getMessage());
-        }
+        System.out.println("Stopping server at port " + port);
+
+        HttpServer httpServer = httpServers.get(port);
+        if (httpServer == null)
+            throw new ServerException("Listener not running!");
+
+        httpServer.stop(1);
+        httpServers.remove(port);
+
+        System.out.println("Server stopped!");
     }
 
     public void startApplication(String appName) throws ServerException {
+        System.out.println("Starting application '" + appName + "'");
+
+        HttpServer httpServer = httpServers.get(port);
+        if (httpServer == null)
+            throw new ServerException("Server has not been started!");
+
         Application application = getApi(appName);
         if (application == null)
             throw new ServerException("App name " + appName + " not found.");
 
-        try {
-            listener.startApplication(application);
-        } catch (ListenerException e) {
-            throw new ServerException(e.getMessage());
-        }
+        httpServer.createContext(application.getApi().getUri(), application.getHttpHandler());
+
         System.out.println("Application '" + appName + "' started!");
     }
 
     public void stopApplication(String appName) throws ServerException {
+        System.out.println("Stopping application " + appName);
+
+        HttpServer httpServer = httpServers.get(port);
+        if (httpServer == null)
+            throw new ServerException("Server has not been started!");
+
+
         Application application = getApi(appName);
         if (application == null)
             throw new ServerException("App name " + appName + " not found.");
 
         try {
-            listener.stopApplication(application.getApi().getUri());
-        } catch (ListenerException e) {
-            throw new ServerException(e.getMessage());
+            httpServer.removeContext(application.getApi().getUri());
+        } catch (IllegalArgumentException e) {
+            // Ignored. Application was not running.
         }
+
         System.out.println("Application '" + appName + "' stopped!");
     }
 
-    public Application getApi(String name) {
+    private Application getApi(String name) {
         return apiList.stream()
                 .filter(api -> api.getName().equals(name))
                 .findFirst()
