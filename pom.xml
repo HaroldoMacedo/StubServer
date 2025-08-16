@@ -9,10 +9,10 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>Execution API</module>
         <module>Workers</module>
-        <module>Config API</module>
-        <module>Config Model</module>
+        <module>ConfigAPI</module>
+        <module>ConfigModel</module>
+        <module>ExecutionAPI</module>
     </modules>
 
     <properties>
@@ -36,7 +36,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.12.2</version>
+            <version>5.12.1</version>
             <scope>test</scope>
         </dependency>
 
