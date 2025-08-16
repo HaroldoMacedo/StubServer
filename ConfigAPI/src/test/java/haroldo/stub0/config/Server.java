@@ -8,13 +8,13 @@ import haroldo.stub0.config.response.ManagerError;
 
 public interface Server {
 
-  Service getService(int id);
-  Attribute getAttribute(int id);
-  API getApi(int id);
+  public Service getService(int id);
+  public Attribute getAttribute(int id);
+  public API getApi(int id);
 
-  ResourceId startService(int id);
-  ManagerError startServiceBadRequest(int id);
-  ResourceId postApi(API api);
-  ManagerError postApiBadRequest(API api);
-  ResourceId putAttribute(Attribute attribute);
+  public ResourceId startService(int id);
+  public ManagerError startServiceBadRequest(int id);
+  public ResourceId postApi(API api);
+  public ManagerError postApiBadRequest(API api);
+  public ResourceId putAttribute(Attribute attribute);
 }
