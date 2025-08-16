@@ -7,10 +7,10 @@
     <file url="file://$PROJECT_DIR$/ConfigModel/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Execution API/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Execution API/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/ExecutionAPI/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/ExecutionAPI/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/Workers/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/Workers/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Node/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Node/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/NodeAgent/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/NodeAgent/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>

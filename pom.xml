@@ -9,10 +9,10 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>Workers</module>
+        <module>Node</module>
         <module>ConfigAPI</module>
         <module>ConfigModel</module>
-        <module>ExecutionAPI</module>
+        <module>NodeAgent</module>
     </modules>
 
     <properties>

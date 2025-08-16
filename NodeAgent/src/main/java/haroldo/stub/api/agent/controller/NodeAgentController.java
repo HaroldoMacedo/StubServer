@@ -1,4 +1,4 @@
-package haroldo.stub.api.execution.controller;
+package haroldo.stub.api.agent.controller;
 
 import haroldo.stub.api.Api;
 import haroldo.stub.api.DefaultApi;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-public class LocalServerController {
+public class NodeAgentController {
 
     @PutMapping("/stub/execution/server/port/{port}")
     public String startLocalHost(@PathVariable(name = "port") int port) {
