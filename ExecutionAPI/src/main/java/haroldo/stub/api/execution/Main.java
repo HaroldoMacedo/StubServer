@@ -1,4 +1,4 @@
-package haroldo.stub0.api.execution;
+package haroldo.stub.api.execution;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

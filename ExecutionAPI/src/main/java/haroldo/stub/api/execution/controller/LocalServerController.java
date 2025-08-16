@@ -1,4 +1,4 @@
-package haroldo.stub0.api.execution.controller;
+package haroldo.stub.api.execution.controller;
 
 import haroldo.stub.api.Api;
 import haroldo.stub.api.DefaultApi;
