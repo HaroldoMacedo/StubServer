@@ -12,7 +12,6 @@ public class NodeTest {
     private String uri = "/hello";
     private String appName = "Hello!";
 
-
     @Test
     public void startListenerTest() throws IOException {
         System.out.println("Start of starting listener test");
@@ -27,6 +26,9 @@ public class NodeTest {
 
     @Test
     public void stopListenerTest() throws IOException {
+        port = 8082;
+        uri = "/alo";
+        appName = "Alo Mundo!";
         System.out.println("Start of stopping listener test");
         Node.startListener(port);
         assert (TestUtils.isPortOpen(port));

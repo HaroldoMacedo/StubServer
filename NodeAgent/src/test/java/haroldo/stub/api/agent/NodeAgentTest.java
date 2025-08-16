@@ -1,6 +1,5 @@
 package haroldo.stub.api.agent;
 
-import haroldo.stub.api.agent.controller.NodeAgentController;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -11,12 +10,13 @@ import java.net.http.HttpResponse;
 
 public class NodeAgentTest {
 
-    String url = "http://localhost:8080/stub/execution";
-    int port = 8081;
-
-    NodeAgentTest() {
-        Main.main(new String[0]);
+    private static final String nodeAgentPort = "8090";
+    static {
+        Main.main(new String[] {nodeAgentPort});
     }
+
+    private static final String url = "http://localhost:" + nodeAgentPort + "/stub/execution";
+    private static final int port = 8080;
 
     @Test
     void startWorkerTest() throws IOException, InterruptedException {
@@ -31,7 +31,7 @@ public class NodeAgentTest {
     void startLocalHostTest() throws IOException, InterruptedException {    // TODO Repeated test from above!
         System.out.println("Starting woker at port " + port);
 
-        HttpResponse<?> response = callPutHost("/server/port/8081", HttpRequest.BodyPublishers.noBody());
+        HttpResponse<?> response = callPutHost("/server/port/8082", HttpRequest.BodyPublishers.noBody());
         assert (response.statusCode() == 200);
         assert(response.body().equals("Server started"));
     }
