@@ -2,6 +2,10 @@ package haroldo.stub.api.agent.controller;
 
 import haroldo.stub.api.Api;
 import haroldo.stub.api.DefaultApi;
+import haroldo.stub.api.resource.ResourceId;
+import haroldo.stub.api.resource.haroldo.stub.api.Body;
+import haroldo.stub.api.resource.haroldo.stub.api.Header;
+import haroldo.stub.api.resource.haroldo.stub.api.RestResponse;
 import haroldo.stub.node.DeployableApplication;
 import haroldo.stub.node.Node;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,67 +17,75 @@ import java.io.IOException;
 
 @RestController
 public class NodeAgentController {
+    private static final String CONTEXT = "/stub/execution";
 
-    @PutMapping("/stub/execution/server/port/{port}")
-    public String startLocalHost(@PathVariable(name = "port") int port) {
+    @PutMapping(CONTEXT + "/server/port/{port}")
+    public RestResponse startLocalHost(@PathVariable(name = "port") int port) {
         System.out.println("Request to start localhost at " + port);
 
+        ResourceId resourceId = new ResourceId("Server",   CONTEXT + "/server/port/", port);
         try {
             Node.startListener(port);
         } catch (IOException e) {
-            return "Port already in use";
+            return new RestResponse(new Header(202), new Body("{\"message\": \"Port already in use\", \n" + resourceId + "}"));
         }
 
         System.out.println("Localhost server started using port " + port);
-        return "Server started";
+        Body body = new Body("{\n\"message\": \"Server started\", " + resourceId  + "}");
+        return new RestResponse(new Header(200), body);
     }
 
-    @DeleteMapping("/stub/execution/server/port/{port}")
-    public String stopLocalHost(@PathVariable(name = "port") int port) {
+    @DeleteMapping(  CONTEXT + "/server/port/{port}")
+    public RestResponse stopLocalHost(@PathVariable(name = "port") int port) {
         System.out.println("Request to stop localhost at " + port);
 
         Node.stopListener(port);
 
         System.out.println("Localhost server stopped at " + port);
-        return "Server stopped";
+        return new RestResponse(new Header(), new Body("{\"message\": \"Server stopped\"}"));
     }
 
-    @PutMapping("/stub/execution/server/port/{port}/application/{application}")
-    public String deployLocalHostApplication(@PathVariable(name = "port") int port, @PathVariable(name = "application") String application) {
+    @PutMapping(  CONTEXT + "/server/port/{port}/application/{application}")
+    public RestResponse deployLocalHostApplication(@PathVariable(name = "port") int port, @PathVariable(name = "application") String application) {
         System.out.println("Request to deploy application " + application + " in port " + port);
 
         Api api = new DefaultApi("/hello");
         DeployableApplication deployableApplication = new DeployableApplication(application, api, 10);
         Node.deployApplication(port, deployableApplication);
 
-        return "Application '" + application + "' deployed!";
+        ResourceId resourceId = new ResourceId("Application", CONTEXT + "/server/port/" + port + "/application", 1);
+        Body body = new Body("{\n\"message\": \"Application deployed\", " + resourceId  + "}");
+        return new RestResponse(new Header(200), body);
     }
 
-    @DeleteMapping("/stub/execution/server/port/{port}/application/{application}")
+    @DeleteMapping(  CONTEXT + "/server/port/{port}/application/{application}")
     public String undeployLocalHostApplication(@PathVariable(name = "port") int port, @PathVariable(name = "application") String application) {
         System.out.println("Request to un-deploy application " + application + " in the server of port " + port);
+// TODO: Gets an applicaiton ID instead of name.
 
         Node.undeployApplication(port, application);
 
         return "Application '" + application + "' un-deployed!";
     }
 
-    @PutMapping("/stub/execution/application/{application}")
+    @PutMapping(  CONTEXT + "application/{application}")
     public String startApplicationAtLocalHost(@PathVariable(name = "application") String application) {
         System.out.println("Request to start application " + application);
+// TODO: Gets an applicaiton ID instead of name.
 
-        if(!Node.startApplication(8081, application))
+        if(!Node.startApplication(8081, application))   //  TODO: Relate application with the port
             return "Error to start application " + application;
 
 
         return "Application '" + application + "' started!";
     }
 
-    @DeleteMapping("/stub/execution/application/{application}")
+    @DeleteMapping(  CONTEXT + "application/{application}")
     public String stopLocalHostApplication(@PathVariable(name = "application") String application) {
         System.out.println("Request to stop application " + application);
+// TODO: Gets an applicaiton ID instead of name.
 
-        Node.stopApplication(8081, application);
+        Node.stopApplication(8081, application);    //  TODO: Relate application with the port
 
         return "Application '" + application + "' stopped!";
     }

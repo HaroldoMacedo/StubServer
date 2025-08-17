@@ -8,7 +8,7 @@ import haroldo.stub.api.DefaultApi;
 import java.io.IOException;
 
 public class NodeTest {
-    private int port = 8081;
+    private int port = 8082;
     private String uri = "/hello";
     private String appName = "Hello!";
 

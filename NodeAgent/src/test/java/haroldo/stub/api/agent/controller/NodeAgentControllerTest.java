@@ -1,5 +1,6 @@
 package haroldo.stub.api.agent.controller;
 
+import haroldo.stub.api.resource.haroldo.stub.api.RestResponse;
 import org.junit.jupiter.api.Test;
 
 public class NodeAgentControllerTest {
@@ -8,27 +9,32 @@ public class NodeAgentControllerTest {
 
     @Test
     void startAndStopLocalHostTest() {
-        System.out.println("Starting and stopping local host test");
+        System.out.println("Test start - Start and stop of Listener at port " + port);
         NodeAgentController nodeAgentController = new NodeAgentController();
-        String response = nodeAgentController.startLocalHost(port);
-        assert(response.equals("Server started"));
+        RestResponse response = nodeAgentController.startLocalHost(port);
+        assert(response.getHttpCode() == 200);
+        assert(response.getBody().toString().contains("Server started"));
+
         response = nodeAgentController.stopLocalHost(port);
-        assert(response.equals("Server stopped"));
-        System.out.println("Starting and stopping local host tested");
+        assert(response.getHttpCode() == 200);
+        assert(response.getBody().toString().contains("Server stopped"));
+        System.out.println("Test end  - Start and stop of Listener at port " + port);
     }
 
     @Test
     void deployApplicationTest() {
-        System.out.println("Start of deploying application test");
+        System.out.println("Test start - Deploy application test");
 
         NodeAgentController nodeAgentController = new NodeAgentController();
-        String response = nodeAgentController.startLocalHost(port);
-        assert(response.equals("Server started"));
+        RestResponse response = nodeAgentController.startLocalHost(port);
+        assert(response.getHttpCode() == 200);
+        assert(response.getBody().toString().contains("Server started"));
 
         response = nodeAgentController.deployLocalHostApplication(port, appName);
-        assert (response.equals("Application '" + appName + "' deployed!"));
+        assert(response.getHttpCode() == 200);
+        assert(response.getBody().toString().contains("Application deployed"));
 
-        System.out.println("End of deploy application test");
+        System.out.println("Test end  - Deploy application test");
     }
 
 }
