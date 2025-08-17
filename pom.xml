@@ -13,6 +13,7 @@
         <module>ConfigAPI</module>
         <module>ConfigModel</module>
         <module>NodeAgent</module>
+        <module>Rest</module>
     </modules>
 
     <properties>
