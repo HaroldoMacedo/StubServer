@@ -41,42 +41,80 @@ public class Node {
         System.out.println("Listener stopped on port " + port);
     }
 
-    public static void deployApplication(int port, DeployableApplication deployableApplication) {
+    public static int deployApplication(int port, DeployableApplication deployableApplication) {
         System.out.println("Deploying application " + deployableApplication.getName() + " on port " + port);
+
+        if (findApplication(deployableApplication.getName()) != null)   //  Name must be unique
+            return 0;
+
         Listener listener = listenerList.get(port);
         if (listener == null)
-            return;
+            return 0;
+
+        int id = getNextApplicationId();
+        deployableApplication.setId(id);
         listener.deployApplication(deployableApplication);
         System.out.println("Application " + deployableApplication.getName() + " deployed on port " + port);
+
+        return id;
     }
 
-    public static void undeployApplication(int port, String name) {
-        System.out.println("Undeploying application " + name + " on port " + port);
-        Listener listener = listenerList.get(port);
+    public static void undeployApplication(int applicationId) {
+        System.out.println("Undeploying application id " + applicationId);
+
+        Listener listener = findListenerForApplicationId(applicationId);
         if (listener == null)
             return;
-        listener.undeployApplication(name);
-        System.out.println("Application " + name + " undeployed on port " + port);
+
+        listener.undeployApplication(applicationId);
+        System.out.println("Application " + applicationId + " undeployed");
     }
 
-    public static boolean startApplication(int port, String applicationName) {
-        System.out.println("Starting application " + applicationName + " on port " + port);
-        Listener listener = listenerList.get(port);
+    public static boolean startApplication(int applicationId) {
+        System.out.println("Starting application " + applicationId);
+
+        Listener listener = findListenerForApplicationId(applicationId);
         if (listener == null)
             return false;
-        if (!listener.startApplication(applicationName))
+        if (!listener.startApplication(applicationId))
             return false;
 
-        System.out.println("Application " + applicationName + " started on port " + port);
+        System.out.println("Application " + applicationId + " started");
         return true;
     }
 
-    public static void stopApplication(int port, String applicationName) {
-        System.out.println("Stopping application " + applicationName + " on port " + port);
-        Listener listener = listenerList.get(port);
+    public static void stopApplication(int applicationId) {
+        System.out.println("Stopping application " + applicationId);
+
+        Listener listener = findListenerForApplicationId(applicationId);
         if (listener == null)
             return;
-        listener.stopApplication(applicationName);
-        System.out.println("Application " + applicationName + " stopped on port " + port);
+
+        listener.stopApplication(applicationId);
+        System.out.println("Application " + applicationId + " stopped");
+    }
+
+    private static DeployableApplication findApplication(String applicationName) {
+        for (Listener listener : listenerList.values()) {
+            DeployableApplication deployableApplication = listener.getApplicationByName(applicationName);
+            if (deployableApplication != null)
+                return deployableApplication;
+        }
+        return null;
+    }
+
+    private static Listener findListenerForApplicationId(int applcationId) {
+        for (Listener listener : listenerList.values()) {
+            DeployableApplication deployableApplication = listener.getApplicationById(applcationId);
+            if (deployableApplication != null)
+                return listener;
+        }
+        return null;
+    }
+
+    private static int nextApplcationId = 1;
+    private static synchronized int getNextApplicationId() {
+        return nextApplcationId++;
     }
 }
+

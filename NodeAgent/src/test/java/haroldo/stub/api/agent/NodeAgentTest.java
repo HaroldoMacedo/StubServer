@@ -22,7 +22,7 @@ public class NodeAgentTest {
     void startWorkerTest() throws IOException, InterruptedException {
         System.out.println("Starting woker at port " + port);
 
-        HttpResponse<?> response = callPutHost("/server/port/8081", HttpRequest.BodyPublishers.noBody());
+        HttpResponse<?> response = callPutHost("/server/port/" + port, HttpRequest.BodyPublishers.noBody());
         assert (response.statusCode() == 200);
         assert(response.body().equals("Server started"));
     }
@@ -31,7 +31,7 @@ public class NodeAgentTest {
     void startLocalHostTest() throws IOException, InterruptedException {    // TODO Repeated test from above!
         System.out.println("Starting woker at port " + port);
 
-        HttpResponse<?> response = callPutHost("/server/port/8082", HttpRequest.BodyPublishers.noBody());
+        HttpResponse<?> response = callPutHost("/server/port/" + port, HttpRequest.BodyPublishers.noBody());
         assert (response.statusCode() == 200);
         assert(response.body().equals("Server started"));
     }

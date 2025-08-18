@@ -76,10 +76,11 @@ public class NodeTest {
         DeployableApplication deployableApplication = new DeployableApplication("Hello", api, 10);
 
         Node.createListener(port);
-        Node.deployApplication(port, deployableApplication);
+        int id = Node.deployApplication(port, deployableApplication);
+        Node.undeployApplication(id);
+        Node.stopListener(port);
 
         System.out.println("End of deploy application test");
-
     }
 
     @Test
@@ -90,19 +91,23 @@ public class NodeTest {
         DeployableApplication deployableApplication = new DeployableApplication("Hello", api, 10);
 
         Node.createListener(port);
-        Node.deployApplication(port, deployableApplication);
+        int id = Node.deployApplication(port, deployableApplication);
 
-        Node.undeployApplication(port, deployableApplication.getName());
-        Node.stopApplication(port, deployableApplication.getName());
+        Node.undeployApplication(id);
+        Node.stopApplication(id);
 
+        Node.stopListener(port);
         System.out.println("End of undeploy application test");
     }
 
     @Test
     void startApplicationTest() throws IOException {
         System.out.println("Start of starting application test");
-        createAndStartApplication(port, appName, uri);
+        Node.createListener(port);
+        int id = createAndStartApplication(port, appName, uri);
 
+
+        Node.undeployApplication(id);
         Node.stopListener(port);
         assert (!TestUtils.isEndpointResponding(port, uri));
         assert (!TestUtils.isPortOpen(port));
@@ -112,14 +117,15 @@ public class NodeTest {
     @Test
     void startApplicationTwiceTest() throws IOException {
         System.out.println("Start of starting application test");
-        createAndStartApplication(port, appName, uri);
+        int id = createAndStartApplication(port, appName, uri);
         try {
-            Node.startApplication(port, appName);
+            Node.startApplication(id);
             assert (false);
         } catch (IllegalArgumentException e) {
             assert (true);
         }
 
+        Node.undeployApplication(id);
         Node.stopListener(port);
         assert (!TestUtils.isPortOpen(port));
         System.out.println("End of start application twice test");
@@ -128,18 +134,20 @@ public class NodeTest {
     @Test
     void stopApplicationTest() throws IOException {
         System.out.println("Start of stopping application test");
-        createAndStartApplication(port, appName, uri);
+        int id = createAndStartApplication(port, appName, uri);
 
-        Node.stopApplication(port, appName);
+        Node.stopApplication(id);
         TestUtils.sleepSeconds(1);
         assert (!TestUtils.isEndpointResponding(port, uri));
 
+        Node.undeployApplication(id);
         Node.stopListener(port);
+
         assert (!TestUtils.isPortOpen(port));
         System.out.println("End of stop application test");
     }
 
-    private void createAndStartApplication(int port, String name, String uri) throws IOException {
+    private int createAndStartApplication(int port, String name, String uri) throws IOException {
         assert (!TestUtils.isPortOpen(port));
         assert (!TestUtils.isEndpointResponding(port, uri));
 
@@ -149,10 +157,19 @@ public class NodeTest {
         Node.startListener(port);
         assert (TestUtils.isPortOpen(port));
 
-        Node.deployApplication(port, deployableApplication);
-        Node.startApplication(port, name);
+        int id = Node.deployApplication(port, deployableApplication);
+        Node.startApplication(id);
         assert (TestUtils.isPortOpen(port));
+
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         assert (TestUtils.isEndpointResponding(port, uri));
+
+        return id;
     }
 
 }

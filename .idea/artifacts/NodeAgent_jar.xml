@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact name="NodeAgent:jar">
-    <output-path>$USER_HOME$/Downloads/NodeAgent</output-path>
+    <output-path>$USER_HOME$/Downloads</output-path>
     <root id="root">
       <element id="archive" name="NodeAgent.jar">
         <element id="directory" name="META-INF">
@@ -44,7 +44,6 @@
       <element id="library" level="project" name="Maven: org.springframework:spring-expression:6.2.8" />
       <element id="library" level="project" name="Maven: org.springframework.boot:spring-boot-starter-json:3.5.3" />
       <element id="library" level="project" name="Maven: com.fasterxml.jackson.module:jackson-module-parameter-names:2.19.1" />
-      <element id="module-source" name="Rest" />
     </root>
   </artifact>
 </component>
