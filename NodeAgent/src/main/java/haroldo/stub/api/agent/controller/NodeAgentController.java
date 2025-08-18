@@ -58,36 +58,34 @@ public class NodeAgentController {
         return new RestResponse(new Header(200), body);
     }
 
-    @DeleteMapping(  CONTEXT + "/server/port/{port}/application/{application}")
-    public String undeployLocalHostApplication(@PathVariable(name = "port") int port, @PathVariable(name = "application") String application) {
-        System.out.println("Request to un-deploy application " + application + " in the server of port " + port);
-// TODO: Gets an applicaiton ID instead of name.
+    @DeleteMapping(  CONTEXT + "/application/{applicationId}")
+    public String undeployLocalHostApplication(@PathVariable(name = "applicationId") String applicationId) {
+        System.out.println("Request to un-deploy application " + applicationId);
+        int id = Integer.parseInt(applicationId);
 
-        Node.undeployApplication(port, application);
+        Node.undeployApplication(id);
 
-        return "Application '" + application + "' un-deployed!";
+        return "Application '" + applicationId + "' un-deployed!";
     }
 
     @PutMapping(  CONTEXT + "application/{application}")
-    public String startApplicationAtLocalHost(@PathVariable(name = "application") String application) {
-        System.out.println("Request to start application " + application);
-// TODO: Gets an applicaiton ID instead of name.
+    public String startApplicationAtLocalHost(@PathVariable(name = "application") String applicationId) {
+        System.out.println("Request to start application " + applicationId);
 
-        if(!Node.startApplication(8081, application))   //  TODO: Relate application with the port
-            return "Error to start application " + application;
+        if(!Node.startApplication(Integer.parseInt(applicationId)))
+            return "Error to start application " + applicationId;
 
 
-        return "Application '" + application + "' started!";
+        return "Application '" + applicationId + "' started!";
     }
 
     @DeleteMapping(  CONTEXT + "application/{application}")
-    public String stopLocalHostApplication(@PathVariable(name = "application") String application) {
-        System.out.println("Request to stop application " + application);
-// TODO: Gets an applicaiton ID instead of name.
+    public String stopLocalHostApplication(@PathVariable(name = "application") String applicationId) {
+        System.out.println("Request to stop application " + applicationId);
 
-        Node.stopApplication(8081, application);    //  TODO: Relate application with the port
+        Node.stopApplication(Integer.parseInt(applicationId));
 
-        return "Application '" + application + "' stopped!";
+        return "Application '" + applicationId + "' stopped!";
     }
 
 }

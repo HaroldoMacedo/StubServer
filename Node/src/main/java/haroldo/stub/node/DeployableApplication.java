@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpHandler;
 import haroldo.stub.api.Api;
 
 public class DeployableApplication {
+    private int id = 0;
     private final String name;
     private final Api api;
     private final HttpHandler httpHandler;
@@ -12,6 +13,14 @@ public class DeployableApplication {
         this.name = name;
         this.api = api;
         this.httpHandler = new DefaultHttpHandler(maxThroughPutPerSecond, api.getApiResponse());
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 public class Listener {
     private final int port;
     private HttpServer server;
-    List<DeployableApplication> deployableApplicationList = new ArrayList<>();
+    List<DeployableApplication> deployedApplicationList = new ArrayList<>();
 
     public Listener(int port) {
         this.port = port;
@@ -34,16 +34,16 @@ public class Listener {
     }
 
     public void deployApplication(DeployableApplication deployableApplication) {
-        deployableApplicationList.add(deployableApplication);
+        deployedApplicationList.add(deployableApplication);
     }
 
-    public void undeployApplication(String applicationName) {
-        stopApplication(applicationName);
-        deployableApplicationList.removeIf(deployableApplication -> deployableApplication.getName().equals(applicationName));
+    public void undeployApplication(int applicationId) {
+        stopApplication(applicationId);
+        deployedApplicationList.removeIf(deployableApplication -> deployableApplication.getId() == applicationId);
     }
 
-    public boolean startApplication(String applicationName) {
-        DeployableApplication deployableApplication = getApplicationByName(applicationName);
+    public boolean startApplication(int applicationId) {
+        DeployableApplication deployableApplication = getApplicationById(applicationId);
         if (deployableApplication == null)
             return false;
 
@@ -51,9 +51,12 @@ public class Listener {
         return true;
     }
 
-    public void stopApplication(String applicationName) {
-        DeployableApplication deployableApplication = getApplicationByName(applicationName);
+    public void stopApplication(int applicationId) {
+        DeployableApplication deployableApplication = getApplicationById(applicationId);
         if (deployableApplication == null)
+            return;
+
+        if (server == null)
             return;
 
         try {
@@ -63,9 +66,16 @@ public class Listener {
         }
     }
 
-    private DeployableApplication getApplicationByName(String applicationName) {
-        return deployableApplicationList.stream()
+    public DeployableApplication getApplicationByName(String applicationName) {
+        return deployedApplicationList.stream()
                 .filter(deployableApplication -> deployableApplication.getName().equals(applicationName))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public DeployableApplication getApplicationById(int applicationId) {
+        return deployedApplicationList.stream()
+                .filter(deployableApplication -> deployableApplication.getId() == applicationId)
                 .findFirst()
                 .orElse(null);
     }
