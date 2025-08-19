@@ -9,6 +9,8 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/ConfigAPI/pom.xml" />
+        <option value="$PROJECT_DIR$/ConfigModel/pom.xml" />
         <option value="$PROJECT_DIR$/Execution API/pom.xml" />
       </set>
     </option>
