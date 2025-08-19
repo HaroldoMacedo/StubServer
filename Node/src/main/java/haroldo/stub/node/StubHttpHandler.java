@@ -3,23 +3,23 @@ package haroldo.stub.node;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import haroldo.stub.api.ApiResponse;
-import haroldo.stub.response.Response;
+import haroldo.stub.api.Api;
+import haroldo.stub.api.Response;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class DefaultHttpHandler implements HttpHandler {
-    final ApiResponse apiResponse;
+class StubHttpHandler implements HttpHandler {
+    final Api api;
     private final long timeBetweenRequestReceivedNanoSec;
     private long lastRequestReceivedNanoSec = 0;
 
     private static final int COUNTPERPRINT = 100;
 
-    public DefaultHttpHandler(int maxThroughPutPerSecond, ApiResponse apiResponse) {
-        this.apiResponse = apiResponse;
+    StubHttpHandler(int maxThroughPutPerSecond, Api api) {
+        this.api = api;
         long nanoSecPerSecond = 1000000000;
         this.timeBetweenRequestReceivedNanoSec = nanoSecPerSecond / maxThroughPutPerSecond;
     }
@@ -33,16 +33,16 @@ public class DefaultHttpHandler implements HttpHandler {
 
         switch (exchange.getRequestMethod()) {
             case "GET":
-                respondRequest(exchange, apiResponse.getGetResponse());
+                respondRequest(exchange, api.getGetResponse());
                 break;
             case "POST":
-                respondRequest(exchange, apiResponse.getPostResponse());
+                respondRequest(exchange, api.getPostResponse());
                 break;
             case "PUT":
-                respondRequest(exchange, apiResponse.getPutResponse());
+                respondRequest(exchange, api.getPutResponse());
                 break;
             case "DELETE":
-                respondRequest(exchange, apiResponse.getDeleteResponse());
+                respondRequest(exchange, api.getDeleteResponse());
                 break;
             default:
                 System.err.println("Method '" + exchange.getRequestMethod() + "' is not implemented.");
@@ -51,7 +51,7 @@ public class DefaultHttpHandler implements HttpHandler {
             System.out.println(now() + " - " + count + ": Responded to '" + exchange.getRequestMethod() + " " + exchange.getRequestURI() + "'");
     }
 
-    void respondRequest(HttpExchange exchange, Response response) {
+    private void respondRequest(HttpExchange exchange, Response response) {
         try {
             throttle();
             OutputStream os = exchange.getResponseBody();

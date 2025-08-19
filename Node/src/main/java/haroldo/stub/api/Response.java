@@ -1,4 +1,4 @@
-package haroldo.stub.response;
+package haroldo.stub.api;
 
 public class Response {
     private String message = "Empty";

@@ -6,13 +6,13 @@ import haroldo.stub.api.Api;
 public class DeployableApplication {
     private int id = 0;
     private final String name;
-    private final Api api;
+    private final String uri;
     private final HttpHandler httpHandler;
 
     public DeployableApplication(String name, Api api, int maxThroughPutPerSecond) {
         this.name = name;
-        this.api = api;
-        this.httpHandler = new DefaultHttpHandler(maxThroughPutPerSecond, api.getApiResponse());
+        this.uri = api.getUri();
+        this.httpHandler = new StubHttpHandler(maxThroughPutPerSecond, api);
     }
 
     public int getId() {
@@ -27,8 +27,8 @@ public class DeployableApplication {
         return name;
     }
 
-    public Api getApi() {
-        return api;
+    public String getUri() {
+        return uri;
     }
 
     public HttpHandler getApplicationHandle() {

@@ -151,7 +151,7 @@ public class NodeTest {
         assert (!TestUtils.isPortOpen(port));
         assert (!TestUtils.isEndpointResponding(port, uri));
 
-        Api api = new DefaultApi(uri);
+        Api api = new DefaultApi( uri, "{\n\"message\": \"Hello World!\"\n}", 100);
         DeployableApplication deployableApplication = new DeployableApplication(name, api, 10);
 
         Node.startListener(port);

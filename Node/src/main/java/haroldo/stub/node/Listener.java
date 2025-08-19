@@ -47,7 +47,7 @@ public class Listener {
         if (deployableApplication == null)
             return false;
 
-        server.createContext(deployableApplication.getApi().getUri(), deployableApplication.getApplicationHandle());
+        server.createContext(deployableApplication.getUri(), deployableApplication.getApplicationHandle());
         return true;
     }
 
@@ -60,7 +60,7 @@ public class Listener {
             return;
 
         try {
-            server.removeContext(deployableApplication.getApi().getUri());
+            server.removeContext(deployableApplication.getUri());
         } catch (IllegalArgumentException e) {
             // Ignore removal of uri that is not running.
         }
