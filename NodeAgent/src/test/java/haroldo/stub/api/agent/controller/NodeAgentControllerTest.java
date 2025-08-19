@@ -1,8 +1,8 @@
 package haroldo.stub.api.agent.controller;
 
-import haroldo.stub.api.agent.haroldo.stub.api.agent.model.Application;
-import haroldo.stub.api.agent.haroldo.stub.api.agent.model.Listener;
-import haroldo.stub.api.agent.haroldo.stub.api.agent.model.ResourceId;
+import haroldo.stub.api.agent.model.Application;
+import haroldo.stub.api.agent.model.Listener;
+import haroldo.stub.api.agent.model.ResourceId;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
