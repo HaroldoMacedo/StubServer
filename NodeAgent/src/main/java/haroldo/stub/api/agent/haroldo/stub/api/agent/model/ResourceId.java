@@ -1,4 +1,4 @@
-package haroldo.stub.api.resource;
+package haroldo.stub.api.agent.haroldo.stub.api.agent.model;
 
 public class ResourceId {
   private final Integer id;
