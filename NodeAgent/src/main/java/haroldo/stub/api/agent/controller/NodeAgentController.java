@@ -2,15 +2,14 @@ package haroldo.stub.api.agent.controller;
 
 import haroldo.stub.api.Api;
 import haroldo.stub.api.DefaultApi;
+import haroldo.stub.api.agent.haroldo.stub.api.agent.model.Application;
+import haroldo.stub.api.agent.haroldo.stub.api.agent.model.Listener;
 import haroldo.stub.api.resource.ResourceId;
 import haroldo.stub.node.DeployableApplication;
 import haroldo.stub.node.Node;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -18,8 +17,8 @@ import java.io.IOException;
 public class NodeAgentController {
     private static final String CONTEXT = "/stub/execution";
 
-    @PutMapping(CONTEXT + "/server/port/{port}")
-    public ResponseEntity<?> startLocalHost(@PathVariable(name = "port") int port) {
+    @PutMapping(CONTEXT + "/listener/port/{port}")
+    public ResponseEntity<?> startListener(@RequestBody Listener listener, @PathVariable(name="port") int port) {
         System.out.println("Request to start localhost at " + port);
 
         try {
@@ -29,11 +28,11 @@ public class NodeAgentController {
         }
 
         System.out.println("Localhost server started using port " + port);
-        return new ResponseEntity<>(new ResourceId(CONTEXT + "/server/port/", port), HttpStatus.OK);
+        return new ResponseEntity<>(new ResourceId(CONTEXT + "/listener/port", port), HttpStatus.OK);
     }
 
-    @DeleteMapping(CONTEXT + "/server/port/{port}")
-    public ResponseEntity<?> stopLocalHost(@PathVariable(name = "port") int port) {
+    @DeleteMapping(CONTEXT + "/listener/port/{port}")
+    public ResponseEntity<?> stopListener(@PathVariable(name = "port") int port) {
         System.out.println("Request to stop localhost at " + port);
 
         Node.stopListener(port);
@@ -42,47 +41,47 @@ public class NodeAgentController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @PutMapping(CONTEXT + "/server/port/{port}/application/{application}")
-    public ResponseEntity<?> deployLocalHostApplication(@PathVariable(name = "port") int port, @PathVariable(name = "application") String application) {
-        System.out.println("Request to deploy application " + application + " in port " + port);
+    @PutMapping(CONTEXT + "/listener/port/{port}/application")
+    public ResponseEntity<?> deployApplication(@PathVariable(name = "port") int port, @RequestBody Application application) {
+        System.out.println("Request to deploy application " + application.getName() + " in port " + port);
 
-        Api api = new DefaultApi("/hello");
-        DeployableApplication deployableApplication = new DeployableApplication(application, api, 10);
-        Node.deployApplication(port, deployableApplication);
+        Api api = new DefaultApi(application.getUri(), application.getResponseMessage(), application.getLatencyMs());
+        DeployableApplication deployableApplication = new DeployableApplication(application.getName(), api, application.getMaxThroughtputTPS());
+        int id = Node.deployApplication(port, deployableApplication);
 
-        ResourceId resourceId = new ResourceId(CONTEXT + "/server/port/" + port + "/application", 1);
+        ResourceId resourceId = new ResourceId(CONTEXT + "/listener/application", id);
         return new ResponseEntity<>(resourceId, HttpStatus.OK);
     }
 
-    @DeleteMapping(CONTEXT + "/application/{applicationId}")
-    public ResponseEntity<?> undeployLocalHostApplication(@PathVariable(name = "applicationId") String applicationId) {
+    @DeleteMapping(CONTEXT + "/listener/application/{applicationId}")
+    public ResponseEntity<?> undeployApplication(@PathVariable(name = "applicationId") String applicationId) {
         System.out.println("Request to un-deploy application " + applicationId);
         int id = Integer.parseInt(applicationId);
 
         if (! Node.undeployApplication(id))
-            new ResponseEntity<>("No application un-deployed!", HttpStatus.ACCEPTED);
+            return new ResponseEntity<>("No application un-deployed!", HttpStatus.ACCEPTED);     //  TODO: Fix this return.
 
-        return new ResponseEntity<>("Application '" + applicationId + "' un-deployed!", HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @PutMapping(CONTEXT + "application/{application}")
-    public ResponseEntity<?> startApplicationAtLocalHost(@PathVariable(name = "application") String applicationId) {
+    @PutMapping(CONTEXT + "/application/{applicationId}")
+    public ResponseEntity<?> startApplication(@PathVariable(name = "applicationId") int applicationId) {
         System.out.println("Request to start application " + applicationId);
 
-        if(!Node.startApplication(Integer.parseInt(applicationId)))
-            return new ResponseEntity<>("Error to start application " + applicationId, HttpStatus.NOT_FOUND);
+        if(!Node.startApplication(applicationId))
+            return new ResponseEntity<>("Error to start application " + applicationId, HttpStatus.NOT_FOUND);     //  TODO: Fix this return.
 
-
-        return new ResponseEntity<>("Application '" + applicationId + "' started!", HttpStatus.OK);
+        ResourceId resourceId = new ResourceId(CONTEXT + "/application", applicationId);
+        return new ResponseEntity<>(resourceId, HttpStatus.OK);
     }
 
-    @DeleteMapping(CONTEXT + "application/{application}")
-    public ResponseEntity<?> stopLocalHostApplication(@PathVariable(name = "application") String applicationId) {
-        System.out.println("Request to stop application " + applicationId);
+    @DeleteMapping(CONTEXT + "/application/{applicationId}")
+    public ResponseEntity<?> stopApplication(@PathVariable(name = "applicationId") int applicationId) {
+        System.out.println("Request to stop application " + applicationId);     //  TODO: Fix this return.
 
-        Node.stopApplication(Integer.parseInt(applicationId));
+        Node.stopApplication(applicationId);
 
-        return new ResponseEntity<>("Application '" + applicationId + "' stopped!", HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
 }

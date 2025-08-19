@@ -4,7 +4,7 @@ package haroldo.stub.node;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import haroldo.stub.api.ApiResponse;
-import haroldo.stub.api.Response;
+import haroldo.stub.response.Response;
 
 import java.io.IOException;
 import java.io.OutputStream;

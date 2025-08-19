@@ -1,4 +1,4 @@
-package haroldo.stub.api;
+package haroldo.stub.response;
 
 public class DefaultResponseHandler implements ResponseHandler {
 

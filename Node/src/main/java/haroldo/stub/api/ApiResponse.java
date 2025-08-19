@@ -1,6 +1,10 @@
 package haroldo.stub.api;
 
 
+import haroldo.stub.response.DefaultResponseHandler;
+import haroldo.stub.response.Response;
+import haroldo.stub.response.ResponseHandler;
+
 public class ApiResponse {
 
     static final int GET = 0;
@@ -12,10 +16,6 @@ public class ApiResponse {
 
     public ApiResponse(String message, long latencyMs) {
         this.responseHandler = new DefaultResponseHandler(new Response(message, latencyMs));
-    }
-
-    public ApiResponse(ResponseHandler responseHandler) {
-        this.responseHandler = responseHandler;
     }
 
     public Response getResponse(int method) {

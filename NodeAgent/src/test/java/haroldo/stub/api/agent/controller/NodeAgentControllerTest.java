@@ -1,52 +1,110 @@
 package haroldo.stub.api.agent.controller;
 
+import haroldo.stub.api.agent.haroldo.stub.api.agent.model.Application;
+import haroldo.stub.api.agent.haroldo.stub.api.agent.model.Listener;
 import haroldo.stub.api.resource.ResourceId;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class NodeAgentControllerTest {
-    private int port = 8081;
-    private String appName = "Hello!";
+
+    private final NodeAgentController nodeAgentController = new NodeAgentController();
 
     @Test
-    void startAndStopLocalHostTest() {
+    void startAndStopListenerTest() {
+        int port = 8082;
         System.out.println("Test start - Start and stop of Listener at port " + port);
 
-        startLocalHost();
-        stopLocalHost();
+        startListener(port);
+        stopListener(port);
 
         System.out.println("Test end  - Start and stop of Listener at port " + port);
     }
 
     @Test
-    void deployApplicationTest() {
-        port = 8083;
-        appName = "Alo!";
+    void deployAndUndeployApplicationTest() {
+        int port = 8083;
+        String appName = "Alo!";
         System.out.println("Test start - Deploy application test");
 
-        startLocalHost();
-
-        NodeAgentController nodeAgentController = new NodeAgentController();
-        ResponseEntity<?> response  = nodeAgentController.deployLocalHostApplication(port, appName);
-        assert(response.getStatusCode() == HttpStatus.OK);
-        assert(!((ResourceId) response.getBody()).getHyperlink().isEmpty());
-
-        stopLocalHost();
+        startListener(port);
+        int appId = deployApplication(port, appName);
+        undeployApplication(appId);
+        stopListener(port);
 
         System.out.println("Test end  - Deploy application test");
     }
 
-    private void startLocalHost() {
-        NodeAgentController nodeAgentController = new NodeAgentController();
-        ResponseEntity<?> response = nodeAgentController.startLocalHost(port);
-        assert(response.getStatusCode() == HttpStatus.OK);
-        assert(!((ResourceId) response.getBody()).getHyperlink().isEmpty());
+    @Test
+    void startAndStopApplicationTest() {
+        int port = 8083;
+        String appName = "Alo!";
+        System.out.println("Test start - Deploy application test");
+
+        startListener(port);
+        int appId = deployApplication(port, appName);
+        startApplication(appId);
+
+        try {
+            Thread.sleep(10 * 1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        stopApplication(appId);
+        stopListener(port);
+
+        System.out.println("Test end  - Deploy application test");
     }
 
-    private void stopLocalHost() {
-        NodeAgentController nodeAgentController = new NodeAgentController();
-        ResponseEntity<?> response = nodeAgentController.stopLocalHost(port);
+    private void startListener(int port) {
+        ResponseEntity<?> response = nodeAgentController.startListener(new Listener(), port);
+        assert (response.getStatusCode() == HttpStatus.OK);
+
+        ResourceId resourceId = (ResourceId) response.getBody();
+        assert (resourceId != null);
+        assert (!resourceId.getHyperlink().isEmpty());
+    }
+
+    private void stopListener(int port) {
+        ResponseEntity<?> response = nodeAgentController.stopListener(port);
+        assert (response.getStatusCode() == HttpStatus.OK);
+        assert (response.getBody() == null);
+    }
+
+    private int deployApplication(int port, String appName) {
+        Application application = new Application("Test", "/test/");
+        application.setLatencyMs(1000);
+        application.setMaxThroughtputTPS(20);
+        application.setResponseMessage("This is the response message");
+        ResponseEntity<?> response = nodeAgentController.deployApplication(port, application);
+        assert (response.getStatusCode() == HttpStatus.OK);
+
+        ResourceId resourceId = (ResourceId) response.getBody();
+        assert (resourceId != null);
+        assert (!resourceId.getHyperlink().isEmpty());
+
+        return resourceId.getId();
+    }
+
+    private void undeployApplication(int appId) {
+        ResponseEntity<?> response = nodeAgentController.undeployApplication(Integer.toString(appId));
+        assert (response.getStatusCode() == HttpStatus.OK);
+        assert(response.getBody() == null);
+    }
+
+    private void startApplication(int appId) {
+        ResponseEntity<?> response = nodeAgentController.startApplication(appId);
+        assert(response.getStatusCode() == HttpStatus.OK);
+
+        ResourceId resourceId = (ResourceId) response.getBody();
+        assert (resourceId != null);
+        assert (!resourceId.getHyperlink().isEmpty());
+    }
+
+    private void stopApplication(int appId) {
+        ResponseEntity<?> response = nodeAgentController.stopApplication(appId);
         assert(response.getStatusCode() == HttpStatus.OK);
         assert(response.getBody() == null);
     }
