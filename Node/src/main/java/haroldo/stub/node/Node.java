@@ -59,15 +59,16 @@ public class Node {
         return id;
     }
 
-    public static void undeployApplication(int applicationId) {
+    public static boolean undeployApplication(int applicationId) {
         System.out.println("Undeploying application id " + applicationId);
 
         Listener listener = findListenerForApplicationId(applicationId);
         if (listener == null)
-            return;
+            return false;
 
         listener.undeployApplication(applicationId);
         System.out.println("Application " + applicationId + " undeployed");
+        return true;
     }
 
     public static boolean startApplication(int applicationId) {

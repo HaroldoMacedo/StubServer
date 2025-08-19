@@ -3,11 +3,10 @@ package haroldo.stub.api.agent.controller;
 import haroldo.stub.api.Api;
 import haroldo.stub.api.DefaultApi;
 import haroldo.stub.api.resource.ResourceId;
-import haroldo.stub.api.resource.haroldo.stub.api.Body;
-import haroldo.stub.api.resource.haroldo.stub.api.Header;
-import haroldo.stub.api.resource.haroldo.stub.api.RestResponse;
 import haroldo.stub.node.DeployableApplication;
 import haroldo.stub.node.Node;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,75 +16,73 @@ import java.io.IOException;
 
 @RestController
 public class NodeAgentController {
-    private static final String CONTEXT = "/stub/execution/";
+    private static final String CONTEXT = "/stub/execution";
 
     @PutMapping(CONTEXT + "/server/port/{port}")
-    public RestResponse startLocalHost(@PathVariable(name = "port") int port) {
+    public ResponseEntity<?> startLocalHost(@PathVariable(name = "port") int port) {
         System.out.println("Request to start localhost at " + port);
 
-        ResourceId resourceId = new ResourceId("Server",   CONTEXT + "/server/port/", port);
         try {
             Node.startListener(port);
         } catch (IOException e) {
-            return new RestResponse(new Header(202), new Body("{\"message\": \"Port already in use\", \n" + resourceId + "}"));
+            return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         System.out.println("Localhost server started using port " + port);
-        Body body = new Body("{\n\"message\": \"Server started\", " + resourceId  + "}");
-        return new RestResponse(new Header(200), body);
+        return new ResponseEntity<>(new ResourceId(CONTEXT + "/server/port/", port), HttpStatus.OK);
     }
 
-    @DeleteMapping(  CONTEXT + "/server/port/{port}")
-    public RestResponse stopLocalHost(@PathVariable(name = "port") int port) {
+    @DeleteMapping(CONTEXT + "/server/port/{port}")
+    public ResponseEntity<?> stopLocalHost(@PathVariable(name = "port") int port) {
         System.out.println("Request to stop localhost at " + port);
 
         Node.stopListener(port);
 
         System.out.println("Localhost server stopped at " + port);
-        return new RestResponse(new Header(), new Body("{\"message\": \"Server stopped\"}"));
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @PutMapping(  CONTEXT + "/server/port/{port}/application/{application}")
-    public RestResponse deployLocalHostApplication(@PathVariable(name = "port") int port, @PathVariable(name = "application") String application) {
+    @PutMapping(CONTEXT + "/server/port/{port}/application/{application}")
+    public ResponseEntity<?> deployLocalHostApplication(@PathVariable(name = "port") int port, @PathVariable(name = "application") String application) {
         System.out.println("Request to deploy application " + application + " in port " + port);
 
         Api api = new DefaultApi("/hello");
         DeployableApplication deployableApplication = new DeployableApplication(application, api, 10);
         Node.deployApplication(port, deployableApplication);
 
-        ResourceId resourceId = new ResourceId("Application", CONTEXT + "/server/port/" + port + "/application", 1);
-        Body body = new Body("{\n\"message\": \"Application deployed\", " + resourceId  + "}");
-        return new RestResponse(new Header(200), body);
+        ResourceId resourceId = new ResourceId(CONTEXT + "/server/port/" + port + "/application", 1);
+        return new ResponseEntity<>(resourceId, HttpStatus.OK);
     }
 
-    @DeleteMapping(  CONTEXT + "/application/{applicationId}")
-    public String undeployLocalHostApplication(@PathVariable(name = "applicationId") String applicationId) {
+    @DeleteMapping(CONTEXT + "/application/{applicationId}")
+    public ResponseEntity<?> undeployLocalHostApplication(@PathVariable(name = "applicationId") String applicationId) {
         System.out.println("Request to un-deploy application " + applicationId);
         int id = Integer.parseInt(applicationId);
 
-        Node.undeployApplication(id);
+        if (! Node.undeployApplication(id))
+            new ResponseEntity<>("No application un-deployed!", HttpStatus.ACCEPTED);;
 
-        return "Application '" + applicationId + "' un-deployed!";
+        return new ResponseEntity<>("Application '" + applicationId + "' un-deployed!", HttpStatus.OK);
     }
 
-    @PutMapping(  CONTEXT + "application/{application}")
-    public String startApplicationAtLocalHost(@PathVariable(name = "application") String applicationId) {
+    @PutMapping(CONTEXT + "application/{application}")
+    public ResponseEntity<?> startApplicationAtLocalHost(@PathVariable(name = "application") String applicationId) {
         System.out.println("Request to start application " + applicationId);
 
         if(!Node.startApplication(Integer.parseInt(applicationId)))
-            return "Error to start application " + applicationId;
+            return new ResponseEntity<>("Error to start application " + applicationId, HttpStatus.NOT_FOUND);
 
 
-        return "Application '" + applicationId + "' started!";
+        return new ResponseEntity<>("Application '" + applicationId + "' started!", HttpStatus.OK);
     }
 
-    @DeleteMapping(  CONTEXT + "application/{application}")
-    public String stopLocalHostApplication(@PathVariable(name = "application") String applicationId) {
+    @DeleteMapping(CONTEXT + "application/{application}")
+    public ResponseEntity<?> stopLocalHostApplication(@PathVariable(name = "application") String applicationId) {
         System.out.println("Request to stop application " + applicationId);
 
         Node.stopApplication(Integer.parseInt(applicationId));
 
-        return "Application '" + applicationId + "' stopped!";
+        return new ResponseEntity<>("Application '" + applicationId + "' stopped!", HttpStatus.OK);
     }
 
 }
