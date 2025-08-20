@@ -12,6 +12,4 @@ public class ScriptEngineTest {
 
         engine.copyApisInToOut();
     }
-
-
 }
