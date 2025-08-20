@@ -1,4 +1,4 @@
-package haroldo.stub.api.agent.haroldo.stub.api.agent.model;
+package haroldo.stub.api.agent.model;
 
 public class Application {
     private String name = "Hello";
