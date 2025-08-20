@@ -1,7 +1,6 @@
 package haroldo.stub.script.in;
 
-import java.util.List;
-
 public interface ScriptIn {
-    List<ApiConfig> getApis();
+    boolean hasNext() throws ApiInException;
+    ApiDefinition getNext() throws ApiInException;
 }

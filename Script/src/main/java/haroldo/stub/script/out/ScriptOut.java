@@ -1,5 +1,7 @@
 package haroldo.stub.script.out;
 
+import haroldo.stub.script.in.ApiDefinition;
+
 public interface ScriptOut {
-    ApiOut configApi(String name, int maxThroughputMs);
+    ApiConfig configApi(ApiDefinition apiDefinition);
 }

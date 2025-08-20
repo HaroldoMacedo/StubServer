@@ -10,7 +10,7 @@ public class ScriptEngineTest {
     public void scriptBasicTest() {
         ScriptEngine engine = new ScriptEngine(new SampleIn(), new SampleOut());
 
-        engine.run();
+        engine.copyApisInToOut();
     }
 
 
