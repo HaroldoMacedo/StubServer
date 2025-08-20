@@ -1,0 +1,63 @@
+package haroldo.stub.script.sample;
+
+import haroldo.stub.script.Definition;
+import haroldo.stub.script.in.ApiDefinition;
+import haroldo.stub.script.in.ScriptIn;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class SampleIn implements ScriptIn {
+
+    List<ApiDefinition> apis = new ArrayList<>();
+
+    public SampleIn() {
+        for (int i = 1; i < 10; i++) {
+            var apiDefinition = new ApiDefinitionImpl("Api-" + i,100 + i);
+            apis.add(apiDefinition);
+            for (int j = 0; j < 20; j++) {
+                if (j == i+1)
+                    apiDefinition.addResponse(new SampleDefinition("Mesg " + i * j, 10 + i + j));
+                else if (j == i+3)
+                    apiDefinition.addResponse(new SampleDefinition("{\"message\": \"Message " + i * j + "\"}", 100000 + i + j));
+                else
+                    apiDefinition.addResponse(new SampleDefinition("{\"message\": \"Message " + i * j + "\"}", 10 + i + j));
+            }
+        }
+    }
+
+    @Override
+    public List<ApiDefinition> getApis() {
+        return apis;
+    }
+
+    class ApiDefinitionImpl implements ApiDefinition {
+        String name;
+        int maxThroughput;
+        List<Definition> definitions = new ArrayList<>();
+
+        public ApiDefinitionImpl(String name, int maxThroughput) {
+            this.name = name;
+            this.maxThroughput = maxThroughput;
+        }
+
+        public void addResponse(Definition definition) {
+            definitions.add(definition);
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public int getMaxThroughputTPS() {
+            return maxThroughput;
+        }
+
+        @Override
+        public List<Definition> getDefinitions() {
+            return definitions;
+        }
+    }
+}

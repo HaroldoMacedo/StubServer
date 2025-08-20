@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="NodeAgent:jar2">
-    <output-path>$USER_HOME$/Downloads</output-path>
-    <root id="archive" name="NodeAgent.jar">
+  <artifact type="jar" name="NodeAgent2">
+    <output-path>$USER_HOME$/Downloads/NodeAgent</output-path>
+    <root id="archive" name="NodeAgent2.jar">
       <element id="module-output" name="NodeAgent" />
       <element id="module-output" name="Node" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/yaml/snakeyaml/2.4/snakeyaml-2.4.jar" path-in-jar="/" />
@@ -39,7 +39,6 @@
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/springframework/spring-expression/6.2.8/spring-expression-6.2.8.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-starter-json/3.5.3/spring-boot-starter-json-3.5.3.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/module/jackson-module-parameter-names/2.19.1/jackson-module-parameter-names-2.19.1.jar" path-in-jar="/" />
-      <element id="module-output" name="Rest" />
     </root>
   </artifact>
 </component>

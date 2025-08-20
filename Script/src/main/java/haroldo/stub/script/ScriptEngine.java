@@ -1,9 +1,9 @@
 package haroldo.stub.script;
 
-import haroldo.stub.api.Response;
-import haroldo.stub.script.in.ApiConfig;
+import haroldo.stub.script.in.ApiDefinition;
+import haroldo.stub.script.in.ApiInException;
 import haroldo.stub.script.in.ScriptIn;
-import haroldo.stub.script.out.ApiOut;
+import haroldo.stub.script.out.ApiConfig;
 import haroldo.stub.script.out.ApiOutException;
 import haroldo.stub.script.out.ScriptOut;
 
@@ -16,23 +16,49 @@ public class ScriptEngine {
         this.scriptOut = scriptOut;
     }
 
-    void run() {
-        for (ApiConfig api : scriptIn.getApis()) {
-            String name = api.getName();
-            int maxThroughput = api.getMaxThroughputMs();
-
+    void copyApisInToOut() {
+        int inCount = 0;
+        for (ApiDefinition apiDefinition : scriptIn.getApis()) {
+            inCount++;
             try {
-                ApiOut apiOut = scriptOut.configApi(name, maxThroughput);
-                for (Response response : api.getResponses()) {
-                    //  TODO: Validate response information.
-                    apiOut.addResponse(response);
-                }
-                apiOut.commit();
+                String name = apiDefinition.getName();
+                int maxThroughput = apiDefinition.getMaxThroughputTPS();
 
-            } catch (ApiOutException o) {
-                System.out.println("Api " + api.getName() + " ignored!: " + o.getMessage());
+                if (name == null || name.isBlank()) throw new ApiInException(inCount, "Name must be provided");
+                if (maxThroughput <= 0) throw new ApiInException(inCount, "Maximum trhoughput " + maxThroughput +
+                        " is invalid. It must be > 0!");
+
+                try {
+                    ApiConfig apiConfig = scriptOut.configApi(name, maxThroughput);
+                    copyResponses(name, apiDefinition, apiConfig);
+                    apiConfig.commit();
+                } catch (ApiOutException o) {
+                    System.out.println("Api " + apiDefinition.getName() + " ignored!: " + o.getMessage());
+                }
+            } catch (ApiInException i) {
+                System.err.println(i.getMessage());
+            }
+        }
+    }
+
+    private void copyResponses(String apiName, ApiDefinition api, ApiConfig apiConfig) throws ApiOutException {
+        int configCount = 0;
+        for (Definition defintion : api.getDefinitions()) {
+            configCount++;
+            if (defintion.getMessage().length() < 10) {
+                System.err.println(apiName + " - Config " + configCount + " ignored! Message too small with only " +
+                        defintion.getMessage().length() + ". (min 10 chars)");
+                continue;
+            }
+            if (defintion.getLatencyMs() > 60 * 1000) {
+                System.err.println(apiName + " - Config " + configCount + " ignored! Latency too big with " +
+                        defintion.getLatencyMs() + "ms. (max 60 seconds)");
+                continue;
             }
 
+            apiConfig.addResponse(defintion);
         }
+
+
     }
 }

@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact name="NodeAgent:jar">
-    <output-path>$USER_HOME$/Downloads</output-path>
+  <artifact name="NodeAgent">
+    <output-path>$USER_HOME$/Downloads/NodeAgent1</output-path>
     <root id="root">
       <element id="archive" name="NodeAgent.jar">
         <element id="directory" name="META-INF">
