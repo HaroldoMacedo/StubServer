@@ -9,28 +9,12 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>NodeAgent</artifactId>
+    <artifactId>Script</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <dependencies>
-        <!-- Spring Boot Starter Web -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <version>3.5.3</version>
-        </dependency>
-        <dependency>
-            <groupId>haroldo.stub</groupId>
-            <artifactId>Node</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-    </dependencies>
 
 </project>

@@ -10,8 +10,10 @@ public class DefaultApi implements Api {
 
     public DefaultApi(String uri, String message, long latencyMS) {
         this.uri = uri;
-        for (int i = 0; i < responses.length; i++)
-            responses[i] = new Response(message, latencyMS);
+        setGetResponse(message, latencyMS);
+        setPostResponse(message, latencyMS);
+        setPutResponse(message, latencyMS);
+        setDeleteResponse(message, latencyMS);
     }
 
     @Override
@@ -25,7 +27,7 @@ public class DefaultApi implements Api {
     }
 
     @Override
-    public void setGetResponse(String message, int latencyMs) {
+    public void setGetResponse(String message, long latencyMs) {
         responses[Api.GET] = new Response(message, latencyMs);
     }
 
@@ -35,7 +37,7 @@ public class DefaultApi implements Api {
     }
 
     @Override
-    public void setPostResponse(String message, int latencyMs) {
+    public void setPostResponse(String message, long latencyMs) {
         responses[Api.POST] = new Response(message, latencyMs);
     }
 
@@ -45,7 +47,7 @@ public class DefaultApi implements Api {
     }
 
     @Override
-    public void setPutResponse(String message, int latencyMs) {
+    public void setPutResponse(String message, long latencyMs) {
         responses[Api.PUT] = new Response(message, latencyMs);
     }
 
@@ -55,7 +57,7 @@ public class DefaultApi implements Api {
     }
 
     @Override
-    public void setDeleteResponse(String message, int latencyMs) {
+    public void setDeleteResponse(String message, long latencyMs) {
         responses[Api.DELETE] = new Response(message, latencyMs);
     }
 }

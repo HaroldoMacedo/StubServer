@@ -9,11 +9,11 @@ public interface Api {
 
     String getUri();
     Response getGetResponse();
-    void setGetResponse(String message, int latencyMs);
+    void setGetResponse(String message, long latencyMs);
     Response getPostResponse();
-    void setPostResponse(String message, int latencyMs);
+    void setPostResponse(String message, long latencyMs);
     Response getPutResponse();
-    void setPutResponse(String message, int latencyMs);
+    void setPutResponse(String message, long latencyMs);
     Response getDeleteResponse();
-    void setDeleteResponse(String message, int latencyMs);
+    void setDeleteResponse(String message, long latencyMs);
 }
