@@ -11,10 +11,8 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
+        int port = readCommandLineParameters(args);
 
-        readCommandLineParameters(args);
-
-        int port = Integer.parseInt(args[0]);
         Node.createListener(port);
 
         SummaryCopy summaryCopy = configureNodeFromCodeScriptDefinition(port);
@@ -22,7 +20,7 @@ public class Main {
         startNodeUntilKilled(port, summaryCopy);
     }
 
-    private static void readCommandLineParameters(String[] args) {
+    private static int readCommandLineParameters(String[] args) {
         if (args.length == 0 || args[0] == null) {
             System.err.println("Command line missing parameters\n");
             System.out.println("Use: java -jar ScriptDirectNode.jar <ListenerPortNumber>");
@@ -30,6 +28,7 @@ public class Main {
         }
 
         System.out.printf("Starting listener at port %s\n", args[0]);
+        return Integer.parseInt(args[0]);
     }
 
     private static SummaryCopy configureNodeFromCodeScriptDefinition(int port) {

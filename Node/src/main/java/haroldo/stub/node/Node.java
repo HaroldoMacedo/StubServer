@@ -84,15 +84,17 @@ public class Node {
         return true;
     }
 
-    public static void stopApplication(int applicationId) {
+    public static boolean stopApplication(int applicationId) {
         System.out.println("Stopping application " + applicationId);
 
         Listener listener = findListenerForApplicationId(applicationId);
         if (listener == null)
-            return;
+            return false;
 
-        listener.stopApplication(applicationId);
+        if (! listener.stopApplication(applicationId))
+            return false;
         System.out.println("Application " + applicationId + " stopped");
+        return true;
     }
 
     private static DeployableApplication findApplication(String applicationName) {

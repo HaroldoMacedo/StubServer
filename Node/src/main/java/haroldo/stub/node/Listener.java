@@ -51,19 +51,20 @@ public class Listener {
         return true;
     }
 
-    public void stopApplication(int applicationId) {
+    public boolean stopApplication(int applicationId) {
         DeployableApplication deployableApplication = getApplicationById(applicationId);
         if (deployableApplication == null)
-            return;
+            return false;
 
         if (server == null)
-            return;
+            return false;
 
         try {
             server.removeContext(deployableApplication.getUri());
         } catch (IllegalArgumentException e) {
             // Ignore removal of uri that is not running.
         }
+        return true;
     }
 
     public DeployableApplication getApplicationByName(String applicationName) {

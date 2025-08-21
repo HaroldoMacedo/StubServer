@@ -140,10 +140,32 @@ public class NodeTest {
         TestUtils.sleepSeconds(1);
         assert (!TestUtils.isEndpointResponding(port, uri));
 
-        Node.undeployApplication(id);
-        Node.stopListener(port);
+        assert(Node.undeployApplication(id));
 
+        Node.stopListener(port);
         assert (!TestUtils.isPortOpen(port));
+
+        System.out.println("End of stop application test");
+    }
+
+    @Test
+    void stopTwiceApplicationTest() throws IOException {
+        System.out.println("Start of stopping application test");
+        int id = createAndStartApplication(port, appName, uri);
+
+        assert(Node.stopApplication(id));
+        assert (!TestUtils.isEndpointResponding(port, uri));
+
+        Node.stopApplication(id);
+        assert (!TestUtils.isEndpointResponding(port, uri));
+
+        assert(Node.undeployApplication(id));
+        assert(!Node.undeployApplication(id));
+        assert(!Node.stopApplication(id));
+
+        Node.stopListener(port);
+        assert (!TestUtils.isPortOpen(port));
+
         System.out.println("End of stop application test");
     }
 

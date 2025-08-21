@@ -1,0 +1,7 @@
+{
+    "name": "Hello1",
+    "uri": "/hello1/",
+    "latencyMs": 200,
+    "maxTroughputTPS": 50,
+    "responseMessage": "{ 'message': 'Hello1 - Max throughput = 50TPS'}"
+}

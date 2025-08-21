@@ -49,13 +49,30 @@ public class NodeAgentTest {
     }
 
     @Test
-    void startAndStopApplicationTest() {    // TODO Repeated test from above!
+    void startAndStopApplicationTest() {
         int port = 8085;
         System.out.println("Test start - Start and stop application test");
 
         ResourceId listenerResource = startListener(port);
         ResourceId applicationDeployResource = deployApplication(port, getDefaultApplication());
         ResourceId applicationResource = startApplication(applicationDeployResource.getId());
+        callDeleteHyperLinkNoReturn(applicationResource.getHyperlink());    //  Stop application.
+
+        callDeleteHyperLinkNoReturn(applicationDeployResource.getHyperlink());  //  Undeploy application.
+        callDeleteHyperLinkNoReturn(listenerResource.getHyperlink());    //  Stop listener.
+        System.out.println("Test start - Start and stop application test");
+    }
+
+    @Test
+    void startOnceAndStopTwiceApplicationTest() {
+        int port = 8085;
+        System.out.println("Test start - Start and stop application test");
+
+        ResourceId listenerResource = startListener(port);
+        ResourceId applicationDeployResource = deployApplication(port, getDefaultApplication());
+        ResourceId applicationResource = startApplication(applicationDeployResource.getId());
+        callDeleteHyperLinkNoReturn(applicationResource.getHyperlink());    //  Stop application.
+
         callDeleteHyperLinkNoReturn(applicationResource.getHyperlink());    //  Stop application.
 
         callDeleteHyperLinkNoReturn(applicationDeployResource.getHyperlink());  //  Undeploy application.
