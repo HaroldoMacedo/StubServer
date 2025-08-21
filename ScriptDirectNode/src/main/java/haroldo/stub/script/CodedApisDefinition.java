@@ -1,45 +1,52 @@
-package haroldo.stub.script.sample;
+package haroldo.stub.script;
 
-import haroldo.stub.script.DefaultDefinitionImpl;
-import haroldo.stub.script.Definition;
 import haroldo.stub.script.in.ApiDefinition;
 import haroldo.stub.script.in.ApiInException;
 import haroldo.stub.script.in.ScriptIn;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class SampleIn implements ScriptIn {
+public class CodedApisDefinition implements ScriptIn {
 
     private final ApiDefinition[] apiDefinitions;
     private int nextDefinition = 0;
 
-    public SampleIn() {
+    public CodedApisDefinition() {
         List<ApiDefinition> apis = new ArrayList<>();
 
         for (int i = 1; i < 10; i++) {
             var apiDefinition = new ApiDefinitionImpl("Api-" + i, "/api" + i + "/", 100 + i);
             apis.add(apiDefinition);
             for (int j = 0; j < 20; j++) {
-                if (j == i + 1)
-                    apiDefinition.addResponse(new DefaultDefinitionImpl(0, "Mesg " + i * j, 10 + i + j));
-                else if (j == i + 3)
-                    apiDefinition.addResponse(new DefaultDefinitionImpl(0, "{\"message\": \"Message " + i * j + "\"}", 100000 + i + j));
-                else
-                    apiDefinition.addResponse(new DefaultDefinitionImpl(0, "{\"message\": \"Message " + i * j + "\"}", 10 + i + j));
+                addDefinitions(apiDefinition, i + j);
             }
         }
 
         apiDefinitions = apis.toArray(new ApiDefinition[0]);
     }
 
+    private final Random random = new Random(System.currentTimeMillis());
+    private void addDefinitions(ApiDefinitionImpl apiDefinition, int number) {
+        for (int method = 0; method < 4; method++) {
+            int rnd = random.nextInt(100);
+            if (rnd > 90)
+                apiDefinition.addResponse(new DefaultDefinitionImpl(method, "Mesg " + number, 10 + rnd));
+            else if (rnd < 10)
+                apiDefinition.addResponse(new DefaultDefinitionImpl(method, "{\"message\": \"Message " + number + "\"}", 100000 + number));
+            else
+                apiDefinition.addResponse(new DefaultDefinitionImpl(method, "{\"message\": \"Message " + number + "\"}", 10 + rnd));
+        }
+    }
+
     @Override
-    public boolean hasNext() {
+    public boolean hasNext() throws ApiInException {
         return nextDefinition < apiDefinitions.length;
     }
 
     @Override
-    public ApiDefinition getNext() {
+    public ApiDefinition getNext() throws ApiInException {
         return apiDefinitions[nextDefinition++];
     }
 

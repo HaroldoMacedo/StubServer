@@ -1,7 +1,7 @@
 package haroldo.stub.script.out;
 
-import haroldo.stub.script.in.ApiDefinition;
-
 public interface ScriptOut {
-    ApiConfig configApi(ApiDefinition apiDefinition);
+    ApiConfigHandle configApi(String name, String uri, int maxThroughputTPS);
+    void commit() throws ApiOutException;
+    void rollback();
 }

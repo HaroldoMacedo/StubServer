@@ -1,15 +1,20 @@
-package haroldo.stub.script.sample;
+package haroldo.stub.script;
 
-import haroldo.stub.script.Definition;
+public class DefaultDefinitionImpl implements Definition {
 
-public class SampleDefinition implements Definition {
-
+    private final int method;
     private final String message;
     private final long latencyMs;
 
-    public SampleDefinition(String message, long latencyMs) {
+    public DefaultDefinitionImpl(int method, String message, long latencyMs) {
+        this.method = method;
         this.message = message;
         this.latencyMs = latencyMs;
+    }
+
+    @Override
+    public int getMethod() {
+        return method;
     }
 
     @Override

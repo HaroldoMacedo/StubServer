@@ -5,8 +5,8 @@ import java.util.List;
 
 public class DefaultApi implements Api {
     private String uri;
-    private int[] next = new int[4];
-    private final List<Response>[] responses = new ArrayList[4];
+    private final int[] next = new int[4];
+    private final List<Response> responses[] = new ArrayList[4];
 
     public DefaultApi() {
         for (int i = 0; i < responses.length; i++)

@@ -10,6 +10,4 @@ public interface ApiDefinition {
     String getUri();
     int getMaxThroughputTPS();
     List<Definition> getDefinitions();
-
-
 }
