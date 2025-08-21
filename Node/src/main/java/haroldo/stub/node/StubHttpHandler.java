@@ -33,16 +33,16 @@ class StubHttpHandler implements HttpHandler {
 
         switch (exchange.getRequestMethod()) {
             case "GET":
-                respondRequest(exchange, api.getGetResponse());
+                respondRequest(exchange, api.getNextGetResponse());
                 break;
             case "POST":
-                respondRequest(exchange, api.getPostResponse());
+                respondRequest(exchange, api.getNextPostResponse());
                 break;
             case "PUT":
-                respondRequest(exchange, api.getPutResponse());
+                respondRequest(exchange, api.getNextPutResponse());
                 break;
             case "DELETE":
-                respondRequest(exchange, api.getDeleteResponse());
+                respondRequest(exchange, api.getNextDeleteResponse());
                 break;
             default:
                 System.err.println("Method '" + exchange.getRequestMethod() + "' is not implemented.");

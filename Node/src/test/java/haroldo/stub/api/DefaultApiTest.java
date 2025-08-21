@@ -6,33 +6,34 @@ public class DefaultApiTest {
 
     @Test
     public void basicTest() {
-        Api api = new DefaultApi();
+        Api api = new DefaultApi("/hello", "Hello World!", 100);
         assert(api.getUri().equals("/hello"));
-        assert(api.getGetResponse().getMessage().equals("Hello World!"));
-        assert(api.getPostResponse().getMessage().equals("Hello World!"));
-        assert(api.getPutResponse().getMessage().equals("Hello World!"));
-        assert(api.getDeleteResponse().getMessage().equals("Hello World!"));
+        assert(api.getNextGetResponse().getMessage().equals("Hello World!"));
+        assert(api.getNextPostResponse().getMessage().equals("Hello World!"));
+        assert(api.getNextPutResponse().getMessage().equals("Hello World!"));
+        assert(api.getNextDeleteResponse().getMessage().equals("Hello World!"));
 
-        assert(api.getGetResponse().getLatencyMs() == 100);
-        assert(api.getPostResponse().getLatencyMs() == 100);
-        assert(api.getPutResponse().getLatencyMs() == 100);
-        assert(api.getDeleteResponse().getLatencyMs() == 100);
+        assert(api.getNextGetResponse().getLatencyMs() == 100);
+        assert(api.getNextPostResponse().getLatencyMs() == 100);
+        assert(api.getNextPutResponse().getLatencyMs() == 100);
+        assert(api.getNextDeleteResponse().getLatencyMs() == 100);
 
-        api.setGetResponse("Alo Mundo!", 200);
-        assert(api.getGetResponse().getLatencyMs() == 200);
-        assert(api.getGetResponse().getMessage().equals("Alo Mundo!"));
+        api = new DefaultApi();
+        api.addGetResponse("Alo Mundo!", 200);
+        assert(api.getNextGetResponse().getLatencyMs() == 200);
+        assert(api.getNextGetResponse().getMessage().equals("Alo Mundo!"));
 
-        api.setPostResponse("Alo Mundo Post!", 201);
-        assert(api.getPostResponse().getLatencyMs() == 201);
-        assert(api.getPostResponse().getMessage().equals("Alo Mundo Post!"));
+        api.addPostResponse("Alo Mundo Post!", 201);
+        assert(api.getNextPostResponse().getLatencyMs() == 201);
+        assert(api.getNextPostResponse().getMessage().equals("Alo Mundo Post!"));
 
-        api.setPutResponse("Alo Mundo Put!", 202);
-        assert(api.getPutResponse().getLatencyMs() == 202);
-        assert(api.getPutResponse().getMessage().equals("Alo Mundo Put!"));
+        api.addPutResponse("Alo Mundo Put!", 202);
+        assert(api.getNextPutResponse().getLatencyMs() == 202);
+        assert(api.getNextPutResponse().getMessage().equals("Alo Mundo Put!"));
 
-        api.setDeleteResponse("Alo Mundo Delete!", 203);
-        assert(api.getDeleteResponse().getLatencyMs() == 203);
-        assert(api.getDeleteResponse().getMessage().equals("Alo Mundo Delete!"));
+        api.addDeleteResponse("Alo Mundo Delete!", 203);
+        assert(api.getNextDeleteResponse().getLatencyMs() == 203);
+        assert(api.getNextDeleteResponse().getMessage().equals("Alo Mundo Delete!"));
 
 
         Response response = new Response();

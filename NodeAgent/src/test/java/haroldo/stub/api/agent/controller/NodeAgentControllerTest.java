@@ -46,12 +46,6 @@ public class NodeAgentControllerTest {
         int appId = deployApplication(port, appName);
         startApplication(appId);
 
-        try {
-            Thread.sleep(10 * 1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
         stopApplication(appId);
         stopListener(port);
 
@@ -74,7 +68,7 @@ public class NodeAgentControllerTest {
     }
 
     private int deployApplication(int port, String appName) {
-        Application application = new Application("Test", "/test/");
+        Application application = new Application(appName, "/test/");
         application.setLatencyMs(1000);
         application.setMaxThroughtputTPS(20);
         application.setResponseMessage("This is the response message");

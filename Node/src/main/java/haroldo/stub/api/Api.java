@@ -8,12 +8,12 @@ public interface Api {
     int DELETE = 3;
 
     String getUri();
-    Response getGetResponse();
-    void setGetResponse(String message, long latencyMs);
-    Response getPostResponse();
-    void setPostResponse(String message, long latencyMs);
-    Response getPutResponse();
-    void setPutResponse(String message, long latencyMs);
-    Response getDeleteResponse();
-    void setDeleteResponse(String message, long latencyMs);
+    Response getNextGetResponse();
+    void addGetResponse(String message, long latencyMs);
+    Response getNextPostResponse();
+    void addPostResponse(String message, long latencyMs);
+    Response getNextPutResponse();
+    void addPutResponse(String message, long latencyMs);
+    Response getNextDeleteResponse();
+    void addDeleteResponse(String message, long latencyMs);
 }

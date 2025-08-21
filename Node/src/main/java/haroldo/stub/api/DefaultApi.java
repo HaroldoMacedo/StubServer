@@ -1,19 +1,25 @@
 package haroldo.stub.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DefaultApi implements Api {
-    private final String uri;
-    private final Response[] responses = new Response[4];
+    private String uri;
+    private int[] next = new int[4];
+    private final List<Response>[] responses = new ArrayList[4];
 
     public DefaultApi() {
-        this("/hello", "Hello World!", 100);
+        for (int i = 0; i < responses.length; i++)
+            responses[i] = new ArrayList<>();
     }
 
     public DefaultApi(String uri, String message, long latencyMS) {
+        this();
         this.uri = uri;
-        setGetResponse(message, latencyMS);
-        setPostResponse(message, latencyMS);
-        setPutResponse(message, latencyMS);
-        setDeleteResponse(message, latencyMS);
+        addGetResponse(message, latencyMS);
+        addPostResponse(message, latencyMS);
+        addPutResponse(message, latencyMS);
+        addDeleteResponse(message, latencyMS);
     }
 
     @Override
@@ -22,42 +28,49 @@ public class DefaultApi implements Api {
     }
 
     @Override
-    public Response getGetResponse() {
-        return responses[Api.GET];
+    public Response getNextGetResponse() {
+        return nextResponse(Api.GET);
     }
 
     @Override
-    public void setGetResponse(String message, long latencyMs) {
-        responses[Api.GET] = new Response(message, latencyMs);
+    public void addGetResponse(String message, long latencyMs) {
+        responses[Api.GET].add(new Response(message, latencyMs));
     }
 
     @Override
-    public Response getPostResponse() {
-        return responses[Api.POST];
+    public Response getNextPostResponse() {
+        return nextResponse(Api.POST);
     }
 
     @Override
-    public void setPostResponse(String message, long latencyMs) {
-        responses[Api.POST] = new Response(message, latencyMs);
+    public void addPostResponse(String message, long latencyMs) {
+        responses[Api.POST].add(new Response(message, latencyMs));
     }
 
     @Override
-    public Response getPutResponse() {
-        return responses[Api.PUT];
+    public Response getNextPutResponse() {
+        return nextResponse(Api.PUT);
     }
 
     @Override
-    public void setPutResponse(String message, long latencyMs) {
-        responses[Api.PUT] = new Response(message, latencyMs);
+    public void addPutResponse(String message, long latencyMs) {
+        responses[Api.PUT].add(new Response(message, latencyMs));
     }
 
     @Override
-    public Response getDeleteResponse() {
-        return responses[Api.DELETE];
+    public Response getNextDeleteResponse() {
+        return nextResponse(Api.DELETE);
     }
 
     @Override
-    public void setDeleteResponse(String message, long latencyMs) {
-        responses[Api.DELETE] = new Response(message, latencyMs);
+    public void addDeleteResponse(String message, long latencyMs) {
+        responses[Api.DELETE].add(new Response(message, latencyMs));
+    }
+
+    private Response nextResponse(int method){
+        Response response = responses[method].get(next[method]);
+        if (++next[method] >= responses[method].size())
+            next[method] = 0;
+        return response;
     }
 }
