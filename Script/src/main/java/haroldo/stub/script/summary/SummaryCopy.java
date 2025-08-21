@@ -13,6 +13,10 @@ public class SummaryCopy {
     private final List<ApiDefinitionSummary> apiDefinitionSummaryList = new ArrayList<>();
     private ApiDefinitionSummary currentApiDefinitionSummary;
 
+    public void addDeployId(int deployId) {
+        currentApiDefinitionSummary.setDeployId(deployId);
+    }
+
     public void incrementCountApiIn() {
         countApiIn++;
     }
@@ -28,10 +32,6 @@ public class SummaryCopy {
     public void addApiDefinitionSummary(ApiDefinition apiDefinition) {
         currentApiDefinitionSummary = new ApiDefinitionSummary(apiDefinition);
         this.apiDefinitionSummaryList.add(currentApiDefinitionSummary);
-    }
-
-    public List<Definition> getDefinitions(){
-        return currentApiDefinitionSummary.getDefinitions();
     }
 
     public void incrementCurrentApiDefintionCount() {

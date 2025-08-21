@@ -41,7 +41,8 @@ public class ScriptEngine {
             try {
                 ApiConfigHandle apiConfigHandle = scriptOut.configApi(apiDefinition.getName(), apiDefinition.getUri(), apiDefinition.getMaxThroughputTPS());
                 copyResponses(apiDefinition, apiConfigHandle);
-                scriptOut.commit();
+                int id = scriptOut.commit();
+                summaryCopy.addDeployId(id);
             } catch (ApiOutException o) {
                 scriptOut.rollback();
                 System.out.println("Api " + apiDefinition.getName() + " ignored!: " + o.getMessage());

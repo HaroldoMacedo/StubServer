@@ -1,7 +1,6 @@
 package haroldo.stub.script.sample;
 
 import haroldo.stub.script.Definition;
-import haroldo.stub.script.in.ApiDefinition;
 import haroldo.stub.script.out.ApiConfigHandle;
 import haroldo.stub.script.out.ApiOutException;
 import haroldo.stub.script.out.ScriptOut;
@@ -17,8 +16,8 @@ public class SampleOut implements ScriptOut {
     }
 
     @Override
-    public void commit() throws ApiOutException {
-
+    public int commit() throws ApiOutException {
+        return 0;
     }
 
     @Override

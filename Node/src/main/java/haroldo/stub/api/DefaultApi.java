@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DefaultApi implements Api {
-    private String uri;
+    private final String uri;
     private final int[] next = new int[4];
-    private final List<Response> responses[] = new ArrayList[4];
+    private final List<Response>[] responses = new ArrayList[4];
 
-    public DefaultApi() {
+    public DefaultApi(String uri) {
+        this.uri = uri;
         for (int i = 0; i < responses.length; i++)
             responses[i] = new ArrayList<>();
     }
 
     public DefaultApi(String uri, String message, long latencyMS) {
-        this();
-        this.uri = uri;
+        this(uri);
         addGetResponse(message, latencyMS);
         addPostResponse(message, latencyMS);
         addPutResponse(message, latencyMS);

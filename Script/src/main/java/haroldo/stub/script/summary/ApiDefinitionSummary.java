@@ -8,12 +8,21 @@ import java.util.List;
 public class ApiDefinitionSummary implements ApiDefinition {
 
     private final ApiDefinition apiDefinition;
+    private int deployId;
 
     private int defintionCount = 0;
     private int configuredCount = 0;
 
     public ApiDefinitionSummary(ApiDefinition apiDefinition) {
         this.apiDefinition = apiDefinition;
+    }
+
+    public int getDeployId() {
+        return deployId;
+    }
+
+    public void setDeployId(int deployId) {
+        this.deployId = deployId;
     }
 
     @Override
@@ -34,14 +43,6 @@ public class ApiDefinitionSummary implements ApiDefinition {
     @Override
     public List<Definition> getDefinitions() {
         return apiDefinition.getDefinitions();
-    }
-
-    public String getFirstMessage() {
-        return apiDefinition.getDefinitions().getFirst().getMessage();
-    }
-
-    public long getFirstLatencyMs() {
-        return apiDefinition.getDefinitions().getFirst().getLatencyMs();
     }
 
     int getDefintionCount() {

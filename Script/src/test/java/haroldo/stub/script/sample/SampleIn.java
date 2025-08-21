@@ -3,7 +3,6 @@ package haroldo.stub.script.sample;
 import haroldo.stub.script.DefaultDefinitionImpl;
 import haroldo.stub.script.Definition;
 import haroldo.stub.script.in.ApiDefinition;
-import haroldo.stub.script.in.ApiInException;
 import haroldo.stub.script.in.ScriptIn;
 
 import java.util.ArrayList;
