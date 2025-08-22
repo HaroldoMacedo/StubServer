@@ -1,4 +1,4 @@
-package haroldo.stub;
+package haroldo.script;
 
 import haroldo.stub.script.FromCodedApisDefinition;
 import haroldo.stub.script.ToStandaAloneNode;

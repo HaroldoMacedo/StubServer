@@ -12,8 +12,9 @@
         <module>Node</module>
         <module>NodeAgent</module>
         <module>Script</module>
-        <module>ScriptDirectNode</module>
+        <module>ScriptFromCode</module>
         <module>ScriptToNode</module>
+        <module>ScriptTests</module>
     </modules>
 
     <properties>

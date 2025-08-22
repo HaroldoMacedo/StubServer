@@ -58,14 +58,6 @@ public class ToStandaAloneNode implements ScriptOut {
         definitions = null;
     }
 
-    class ConfigHandle implements ApiConfigHandle {
-
-        @Override
-        public void addResponse(Definition definition) throws ApiOutException {
-            definitions.add(definition);
-        }
-    }
-
     @Override
     public void startListener() throws ApiOutException {
         try {
@@ -78,6 +70,14 @@ public class ToStandaAloneNode implements ScriptOut {
     @Override
     public void startApplications() throws ApiOutException {
 
+    }
+
+    class ConfigHandle implements ApiConfigHandle {
+
+        @Override
+        public void addResponse(Definition definition) throws ApiOutException {
+            definitions.add(definition);
+        }
     }
 
 }
