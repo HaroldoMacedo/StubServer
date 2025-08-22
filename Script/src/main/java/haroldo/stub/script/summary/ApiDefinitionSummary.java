@@ -1,9 +1,6 @@
 package haroldo.stub.script.summary;
 
-import haroldo.stub.script.Definition;
 import haroldo.stub.script.in.ApiDefinition;
-
-import java.util.List;
 
 public class ApiDefinitionSummary {
 
