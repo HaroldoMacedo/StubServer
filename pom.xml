@@ -15,6 +15,7 @@
         <module>ScriptFromCode</module>
         <module>ScriptToNode</module>
         <module>ScriptTests</module>
+        <module>ScriptFromCSVFile</module>
     </modules>
 
     <properties>

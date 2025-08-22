@@ -17,7 +17,7 @@ public class FromCodedApisDefinition implements ScriptIn {
         List<ApiDefinition> apis = new ArrayList<>();
 
         for (int i = 1; i < 10; i++) {
-            var apiDefinition = new ApiDefinitionImpl("Api-" + i, "/api" + i + "/", 100 + i);
+            var apiDefinition = new ApiDefinition("Api-" + i, "/api" + i + "/", 100 + i);
             apis.add(apiDefinition);
             for (int j = 0; j < 20; j++) {
                 addDefinitions(apiDefinition, i + j);
@@ -28,7 +28,7 @@ public class FromCodedApisDefinition implements ScriptIn {
     }
 
     private final Random random = new Random(System.currentTimeMillis());
-    private void addDefinitions(ApiDefinitionImpl apiDefinition, int number) {
+    private void addDefinitions(ApiDefinition apiDefinition, int number) {
         for (int method = 0; method < 4; method++) {
             int rnd = random.nextInt(100);
             if (rnd > 90)
@@ -50,40 +50,4 @@ public class FromCodedApisDefinition implements ScriptIn {
         return apiDefinitions[nextDefinition++];
     }
 
-    static class ApiDefinitionImpl implements ApiDefinition {
-        String name;
-        String uri;
-        int maxThroughput;
-        List<Definition> definitions = new ArrayList<>();
-
-        public ApiDefinitionImpl(String name, String uri, int maxThroughput) {
-            this.name = name;
-            this.uri = uri;
-            this.maxThroughput = maxThroughput;
-        }
-
-        public void addResponse(Definition definition) {
-            definitions.add(definition);
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public String getUri() {
-            return uri;
-        }
-
-        @Override
-        public int getMaxThroughputTPS() {
-            return maxThroughput;
-        }
-
-        @Override
-        public List<Definition> getDefinitions() {
-            return definitions;
-        }
-    }
 }

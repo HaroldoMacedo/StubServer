@@ -5,7 +5,7 @@ import haroldo.stub.script.in.ApiDefinition;
 
 import java.util.List;
 
-public class ApiDefinitionSummary implements ApiDefinition {
+public class ApiDefinitionSummary {
 
     private final ApiDefinition apiDefinition;
     private int deployId;
@@ -23,26 +23,6 @@ public class ApiDefinitionSummary implements ApiDefinition {
 
     public void setDeployId(int deployId) {
         this.deployId = deployId;
-    }
-
-    @Override
-    public String getName() {
-        return apiDefinition.getName();
-    }
-
-    @Override
-    public String getUri() {
-        return apiDefinition.getUri();
-    }
-
-    @Override
-    public int getMaxThroughputTPS() {
-        return apiDefinition.getMaxThroughputTPS();
-    }
-
-    @Override
-    public List<Definition> getDefinitions() {
-        return apiDefinition.getDefinitions();
     }
 
     int getDefintionCount() {
@@ -66,7 +46,7 @@ public class ApiDefinitionSummary implements ApiDefinition {
         StringBuilder sb = new StringBuilder();
         sb.append("ID = " + deployId + " - " + apiDefinition.getName());
         sb.append("(\"" + apiDefinition.getUri() + "\" )");
-        sb.append(" with max throughput of " + getMaxThroughputTPS() + " TPS");
+        sb.append(" with max throughput of " + apiDefinition.getMaxThroughputTPS() + " TPS");
         sb.append(" | " + getDefintionCount() + " read configs, " + getConfiguredCount() + " applied configs");
         sb.append("\n");
 

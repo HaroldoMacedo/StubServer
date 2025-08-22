@@ -7,7 +7,7 @@ import haroldo.stub.script.in.ApiInException;
 import haroldo.stub.script.out.ApiOutException;
 import haroldo.stub.script.summary.SummaryScript;
 
-public class Main {
+public class FromCodeToNode {
     public static void main(String[] args) {
         try {
             int listenerPort = readCommandLineParameters(args);
