@@ -16,5 +16,22 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>haroldo.stub</groupId>
+            <artifactId>Script</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>haroldo.stub</groupId>
+            <artifactId>ScriptToNode</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>haroldo.stub</groupId>
+            <artifactId>ScriptFromCode</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
 
 </project>

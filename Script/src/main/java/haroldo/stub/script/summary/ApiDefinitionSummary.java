@@ -60,4 +60,16 @@ public class ApiDefinitionSummary implements ApiDefinition {
     void incrementConfiguredCount() {
         this.configuredCount++;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ID = " + deployId + " - " + apiDefinition.getName());
+        sb.append("(\"" + apiDefinition.getUri() + "\" )");
+        sb.append(" with max throughput of " + getMaxThroughputTPS() + " TPS");
+        sb.append(" | " + getDefintionCount() + " read configs, " + getConfiguredCount() + " applied configs");
+        sb.append("\n");
+
+        return sb.toString();
+    }
 }

@@ -9,6 +9,9 @@ public class SummaryScript {
     //  TODO: Create a summary of the configuration copy stating the amount of configurations done and errors.
 
     private int countApiIn;
+    private int countApiOut;
+    private int countApiErrorIn;
+    private int countApiErrorOut;
     private final List<ApiDefinitionSummary> apiDefinitionSummaryList = new ArrayList<>();
     private ApiDefinitionSummary currentApiDefinitionSummary;
 
@@ -22,6 +25,30 @@ public class SummaryScript {
 
     public int getCountApiIn() {
         return countApiIn;
+    }
+
+    public void incrementCountApiOut() {
+        countApiOut++;
+    }
+
+    public int getCountApiOut() {
+        return countApiOut;
+    }
+
+    public int getCountApiErrorIn() {
+        return countApiErrorIn;
+    }
+
+    public void incrementCountApiErrorIn() {
+        countApiErrorIn++;
+    }
+
+    public int getCountApiErrorOut() {
+        return countApiErrorOut;
+    }
+
+    public void incrementCountApiErrorOut() {
+        countApiErrorOut++;
     }
 
     public List<ApiDefinitionSummary> getApiDefinitionSummaryList() {
@@ -43,5 +70,22 @@ public class SummaryScript {
 
     public int getCurrentApiConfiguredCount() {
         return currentApiDefinitionSummary.getConfiguredCount();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+        sb.append("-------------------- Summary Script START --------------------\n");
+        sb.append("APIs read   : " + countApiIn  + " - Errors: " + countApiErrorIn + "\n");
+        sb.append("APIs written: " + countApiOut + " - Errors: " + countApiErrorOut + "\n");
+        sb.append("\n");
+        sb.append("--- APIs Deployed ---\n");
+        for (ApiDefinitionSummary apiDefinitionSummary : apiDefinitionSummaryList) {
+            sb.append(apiDefinitionSummary.toString());
+        }
+        sb.append("-------------------- Summary Script  END  --------------------\n");
+
+        return sb.toString();
     }
 }

@@ -14,6 +14,8 @@ public class Main {
 
             ScriptEngine engine = new ScriptEngine(new FromCodedApisDefinition(), new ToStandaAloneNode(listenerPort));
             SummaryScript summaryScript = engine.configureAndRunAPIs();
+
+            System.out.println(summaryScript.toString());
         } catch (ApiInException e) {
             System.err.println("Error while reading the APIs configurations - " + e.getMessage());
             e.printStackTrace();

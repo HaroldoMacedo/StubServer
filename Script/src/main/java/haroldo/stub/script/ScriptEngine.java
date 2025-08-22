@@ -42,12 +42,15 @@ public class ScriptEngine {
                 ApiConfigHandle apiConfigHandle = scriptOut.configApi(apiDefinition.getName(), apiDefinition.getUri(), apiDefinition.getMaxThroughputTPS());
                 copyResponses(apiDefinition, apiConfigHandle);
                 int id = scriptOut.commit();
+                summaryScript.incrementCountApiOut();
                 summaryScript.addDeployId(id);
             } catch (ApiOutException o) {
+                summaryScript.incrementCountApiErrorOut();
                 scriptOut.rollback();
                 System.out.println("Api " + apiDefinition.getName() + " ignored!: " + o.getMessage());
             }
         } catch (ApiInException i) {
+            summaryScript.incrementCountApiErrorIn();
             System.err.println(i.getMessage());
         }
     }
