@@ -1,7 +1,6 @@
 
-SET PORT=%1
-java -jar NodeAgent.jar %PORT%
+SET NodePort=%1
+SET SpringBootRoot=%HOMEPATH%\Downloads\SpringBoot\*
 
-
-
+java -cp NodeAgent.jar;%SpringBootRoot% haroldo.stub.api.agent.Main %NodePort%
 

@@ -13,6 +13,7 @@
         <module>NodeAgent</module>
         <module>Script</module>
         <module>ScriptDirectNode</module>
+        <module>ScriptToNode</module>
     </modules>
 
     <properties>

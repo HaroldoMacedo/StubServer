@@ -1,23 +1,26 @@
 package haroldo.stub;
 
-import haroldo.stub.node.Node;
-import haroldo.stub.script.CodedApisDefinition;
-import haroldo.stub.script.NodeConfiguration;
+import haroldo.stub.script.FromCodedApisDefinition;
+import haroldo.stub.script.ToStandaAloneNode;
 import haroldo.stub.script.ScriptEngine;
-import haroldo.stub.script.summary.ApiDefinitionSummary;
-import haroldo.stub.script.summary.SummaryCopy;
-
-import java.io.IOException;
+import haroldo.stub.script.in.ApiInException;
+import haroldo.stub.script.out.ApiOutException;
+import haroldo.stub.script.summary.SummaryScript;
 
 public class Main {
     public static void main(String[] args) {
-        int port = readCommandLineParameters(args);
+        try {
+            int listenerPort = readCommandLineParameters(args);
 
-        Node.createListener(port);
-
-        SummaryCopy summaryCopy = configureNodeFromCodeScriptDefinition(port);
-
-        startNodeUntilKilled(port, summaryCopy);
+            ScriptEngine engine = new ScriptEngine(new FromCodedApisDefinition(), new ToStandaAloneNode(listenerPort));
+            SummaryScript summaryScript = engine.configureAndRunAPIs();
+        } catch (ApiInException e) {
+            System.err.println("Error while reading the APIs configurations - " + e.getMessage());
+            e.printStackTrace();
+        } catch (ApiOutException e) {
+            System.err.println("Error while configuring or running the APIs - " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private static int readCommandLineParameters(String[] args) {
@@ -29,25 +32,5 @@ public class Main {
 
         System.out.printf("Starting listener at port %s\n", args[0]);
         return Integer.parseInt(args[0]);
-    }
-
-    private static SummaryCopy configureNodeFromCodeScriptDefinition(int port) {
-        ScriptEngine engine = new ScriptEngine(new CodedApisDefinition(), new NodeConfiguration(port));
-        SummaryCopy summaryCopy = engine.copyApisInToOut();
-
-        return summaryCopy;
-    }
-
-    private static void startNodeUntilKilled(int port, SummaryCopy summaryCopy) {
-        try {
-            Node.startListener(port);
-
-            for (ApiDefinitionSummary app : summaryCopy.getApiDefinitionSummaryList()) {
-                Node.startApplication(app.getDeployId());
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

@@ -25,6 +25,16 @@ public class SampleOut implements ScriptOut {
 
     }
 
+    @Override
+    public void startListener() throws ApiOutException {
+
+    }
+
+    @Override
+    public void startApplications() throws ApiOutException {
+
+    }
+
     static class ConfigHandle implements ApiConfigHandle {
         String name;
         String uri;

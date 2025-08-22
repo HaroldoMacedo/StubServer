@@ -13,6 +13,7 @@
         <option value="$PROJECT_DIR$/ConfigModel/pom.xml" />
         <option value="$PROJECT_DIR$/Execution API/pom.xml" />
         <option value="$PROJECT_DIR$/Rest/pom.xml" />
+        <option value="$PROJECT_DIR$/ScriptDirectNode/ScriptNode/pom.xml" />
       </set>
     </option>
   </component>

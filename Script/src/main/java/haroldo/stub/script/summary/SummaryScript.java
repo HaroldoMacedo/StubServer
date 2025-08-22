@@ -1,12 +1,11 @@
 package haroldo.stub.script.summary;
 
-import haroldo.stub.script.Definition;
 import haroldo.stub.script.in.ApiDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SummaryCopy {
+public class SummaryScript {
     //  TODO: Create a summary of the configuration copy stating the amount of configurations done and errors.
 
     private int countApiIn;

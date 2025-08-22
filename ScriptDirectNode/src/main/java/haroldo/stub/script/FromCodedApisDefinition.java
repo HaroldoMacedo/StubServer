@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class CodedApisDefinition implements ScriptIn {
+public class FromCodedApisDefinition implements ScriptIn {
 
     private final ApiDefinition[] apiDefinitions;
     private int nextDefinition = 0;
 
-    public CodedApisDefinition() {
+    public FromCodedApisDefinition() {
         List<ApiDefinition> apis = new ArrayList<>();
 
         for (int i = 1; i < 10; i++) {

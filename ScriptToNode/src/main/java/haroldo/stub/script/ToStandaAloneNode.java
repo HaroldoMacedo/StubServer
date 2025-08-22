@@ -8,18 +8,20 @@ import haroldo.stub.script.out.ApiConfigHandle;
 import haroldo.stub.script.out.ApiOutException;
 import haroldo.stub.script.out.ScriptOut;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NodeConfiguration implements ScriptOut {
+public class ToStandaAloneNode implements ScriptOut {
     private final int port;
     String name;
     String uri;
     int maxThroughputTPS;
     List<Definition> definitions = null;
 
-    public NodeConfiguration(int port) {
+    public ToStandaAloneNode(int port) {
         this.port = port;
+        Node.createListener(port);
     }
 
     @Override
@@ -63,4 +65,19 @@ public class NodeConfiguration implements ScriptOut {
             definitions.add(definition);
         }
     }
+
+    @Override
+    public void startListener() throws ApiOutException {
+        try {
+            Node.startListener(port);
+        } catch (IOException e) {
+            throw new ApiOutException("Couldn't start the listener at port " + port + " - " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void startApplications() throws ApiOutException {
+
+    }
+
 }

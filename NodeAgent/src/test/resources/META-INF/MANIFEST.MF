@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
 Main-Class: haroldo.stub.api.agent.Main
+Class-Path: C:\Users\P418515\Downloads\NodeAgent1
 
