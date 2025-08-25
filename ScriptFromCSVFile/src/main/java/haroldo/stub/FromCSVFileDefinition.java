@@ -17,11 +17,11 @@ public class FromCSVFileDefinition implements ScriptIn {
     private final Scanner scanner;
     private int count = 0;
 
-    FromCSVFileDefinition(File csvFileInput) throws ApiInException {
+    public FromCSVFileDefinition(File csvFileInput) throws ApiInException {
         try {
             scanner = new Scanner(csvFileInput);
         } catch (FileNotFoundException e) {
-            throw new ApiInException(0, "File not found: " + e.toString());
+            throw new ApiInException(0, "File not found: " + e.getMessage());
         }
     }
 

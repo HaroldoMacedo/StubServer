@@ -17,6 +17,7 @@ public class ToStandaAloneNode implements ScriptOut {
     String name;
     String uri;
     int maxThroughputTPS;
+    List<Integer> deployedApplicationIdList = new ArrayList<>();
     List<Definition> definitions = null;
 
     public ToStandaAloneNode(int port) {
@@ -48,6 +49,7 @@ public class ToStandaAloneNode implements ScriptOut {
         }
 
         int id = Node.deployApplication(port, new DeployableApplication(name, api, maxThroughputTPS));
+        deployedApplicationIdList.add(id);
         definitions = null;
 
         return id;
@@ -69,7 +71,9 @@ public class ToStandaAloneNode implements ScriptOut {
 
     @Override
     public void startApplications() throws ApiOutException {
-
+        for (int id : deployedApplicationIdList) {
+            Node.startApplication(id);
+        }
     }
 
     class ConfigHandle implements ApiConfigHandle {

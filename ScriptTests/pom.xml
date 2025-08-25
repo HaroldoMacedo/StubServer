@@ -32,6 +32,11 @@
             <artifactId>ScriptFromCode</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>haroldo.stub</groupId>
+            <artifactId>ScriptFromCSVFile</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
 </project>
