@@ -2,7 +2,7 @@ package haroldo.stub.script;
 
 import haroldo.stub.api.Api;
 import haroldo.stub.api.DefaultApi;
-import haroldo.stub.node.DeployableApplication;
+import haroldo.stub.runtime.DeployableApplication;
 import haroldo.stub.node.Node;
 import haroldo.stub.script.out.ApiConfigHandle;
 import haroldo.stub.script.out.ApiOutException;
@@ -37,7 +37,7 @@ public class ToStandaAloneNode implements ScriptOut {
 
     @Override
     public int commit() throws ApiOutException {
-        Api api = new DefaultApi(uri);
+        Api api = new DefaultApi(uri, 100);
         for (Definition definition : definitions) {
             switch (definition.getMethod()) {
                 case Api.GET -> api.addGetResponse(definition.getMessage(), definition.getLatencyMs());

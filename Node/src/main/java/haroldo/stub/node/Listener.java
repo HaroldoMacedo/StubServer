@@ -1,13 +1,13 @@
 package haroldo.stub.node;
 
 import com.sun.net.httpserver.HttpServer;
+import haroldo.stub.runtime.DeployableApplication;
 
 import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 public class Listener {
     private final int port;
@@ -22,7 +22,8 @@ public class Listener {
         try {
             server = HttpServer.create(new InetSocketAddress(port), 0);
 
-            server.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
+//            server.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
+            server.setExecutor(new ExecutorVirtualThreads(10, 100));    // TODO: Add config data!
             server.start();
         } catch (BindException e) {
             System.out.println("Listener already started!");

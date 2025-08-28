@@ -8,8 +8,6 @@ import haroldo.stub.script.out.ApiOutException;
 import haroldo.stub.script.summary.SummaryScript;
 
 import java.io.File;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class FromCSVToNode {
     static String root = "ScriptTests/src/main/resources/";
@@ -18,7 +16,7 @@ public class FromCSVToNode {
         try {
             int listenerPort = readCommandLineParameters(args);
 
-            File in = new File(root + "ManyLines.csv");
+            File in = new File(root + "OneLine.csv");
             ScriptEngine engine = new ScriptEngine(new FromCSVFileDefinition(in), new ToStandaAloneNode(listenerPort));
             SummaryScript summaryScript = engine.configureAndRunAPIs();
 

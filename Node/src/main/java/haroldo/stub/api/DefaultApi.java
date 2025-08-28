@@ -7,15 +7,17 @@ public class DefaultApi implements Api {
     private final String uri;
     private final int[] next = new int[4];
     private final List<Response>[] responses = new ArrayList[4];
+    private final long avgResponsetTimeMS;
 
-    public DefaultApi(String uri) {
+    public DefaultApi(String uri, long avgResponseTimeMS) {
         this.uri = uri;
+        this.avgResponsetTimeMS = avgResponseTimeMS;
         for (int i = 0; i < responses.length; i++)
             responses[i] = new ArrayList<>();
     }
 
     public DefaultApi(String uri, String message, long latencyMS) {
-        this(uri);
+        this(uri, latencyMS);
         addGetResponse(message, latencyMS);
         addPostResponse(message, latencyMS);
         addPutResponse(message, latencyMS);
@@ -25,6 +27,11 @@ public class DefaultApi implements Api {
     @Override
     public String getUri() {
         return uri;
+    }
+
+    @Override
+    public long getAvgResponseTimeMS() {
+        return avgResponsetTimeMS;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package haroldo.stub.node;
 
+import haroldo.stub.runtime.DeployableApplication;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

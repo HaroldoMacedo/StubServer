@@ -1,6 +1,7 @@
 package haroldo.stub.node;
 
 import haroldo.stub.TestUtils;
+import haroldo.stub.runtime.DeployableApplication;
 import org.junit.jupiter.api.Test;
 import haroldo.stub.api.Api;
 import haroldo.stub.api.DefaultApi;

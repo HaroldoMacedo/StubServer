@@ -18,7 +18,7 @@ public class DefaultApiTest {
         assert(api.getNextPutResponse().getLatencyMs() == 100);
         assert(api.getNextDeleteResponse().getLatencyMs() == 100);
 
-        api = new DefaultApi("/alo");
+        api = new DefaultApi("/alo", 200);
         api.addGetResponse("Alo Mundo!", 200);
         assert(api.getNextGetResponse().getLatencyMs() == 200);
         assert(api.getNextGetResponse().getMessage().equals("Alo Mundo!"));

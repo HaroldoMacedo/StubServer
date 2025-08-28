@@ -7,13 +7,14 @@ public class Application {
     private int latencyMs = 100;
     private String responseMessage = "Hello sunny world!";
 
-    private int maxThroughtputTPS = 2;
+    private int maxThroughtputTPS = 10;
 
     public Application() {}
 
     public Application(String name, String uri) {
         setName(name);
         setUri(uri);
+        setMaxThroughtputTPS(maxThroughtputTPS);
     }
 
     public String getName() {

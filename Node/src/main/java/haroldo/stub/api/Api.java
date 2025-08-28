@@ -8,6 +8,7 @@ public interface Api {
     int DELETE = 3;
 
     String getUri();
+    long getAvgResponseTimeMS();
     Response getNextGetResponse();
     void addGetResponse(String message, long latencyMs);
     Response getNextPostResponse();
