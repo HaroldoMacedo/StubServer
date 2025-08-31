@@ -25,6 +25,7 @@ public class Main {
     }
 
     public static void mainImpl(String[] args) throws Exception {
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         Parameters parameters = new Parameters(args);
 
         Properties propertiesIn = parameters.getPropertiesIn();

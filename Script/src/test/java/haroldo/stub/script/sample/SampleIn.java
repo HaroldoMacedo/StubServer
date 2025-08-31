@@ -13,8 +13,8 @@ public class SampleIn implements ScriptIn {
 
     private final ApiDefinition[] apiDefinitions;
     private int nextDefinition = 0;
-    private String suffixName;
-    private String suffixApi;
+    private String suffixName = "Api-";
+    private String suffixApi = "/api-";
 
     public SampleIn() {
         List<ApiDefinition> apis = new ArrayList<>();
@@ -49,5 +49,10 @@ public class SampleIn implements ScriptIn {
     public void setProperties(Properties properties) throws ApiInException {
         suffixName = properties.getProperty("suffix.name");
         suffixApi =  properties.getProperty("suffix.api");
+
+        if (suffixName == null)
+            suffixName = "Api-";
+        if (suffixApi == null)
+            suffixApi = "/api-";
     }
 }

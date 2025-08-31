@@ -42,6 +42,8 @@ public class Parameters {
         FileInputStream propertyFileIn = null;
         Properties properties;
         try {
+            if (!file.exists())
+                throw new ParameterException("File '" + file.getName() + "' not found.");
             propertyFileIn = new FileInputStream(file);
             properties = new Properties();
             properties.load(propertyFileIn);
@@ -51,7 +53,8 @@ public class Parameters {
             throw new ParameterException("Cannot open '" + file.getName() + "' for reading.");
         } finally {
             try {
-                propertyFileIn.close();
+                if (propertyFileIn != null)
+                    propertyFileIn.close();
             } catch (Exception e) {
             }
         }
