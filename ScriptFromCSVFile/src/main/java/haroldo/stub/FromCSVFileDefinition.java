@@ -1,7 +1,7 @@
 package haroldo.stub;
 
-import haroldo.stub.script.DefaultDefinitionImpl;
-import haroldo.stub.script.Definition;
+import haroldo.stub.script.definition.DefaultDefinitionImpl;
+import haroldo.stub.script.definition.Definition;
 import haroldo.stub.script.in.ApiDefinition;
 import haroldo.stub.script.in.ApiInException;
 import haroldo.stub.script.in.ScriptIn;
@@ -10,20 +10,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class FromCSVFileDefinition implements ScriptIn {
 
-    private final Scanner scanner;
+    private Scanner scanner;
     private int count = 0;
-
-    public FromCSVFileDefinition(File csvFileInput) throws ApiInException {
-        try {
-            scanner = new Scanner(csvFileInput);
-        } catch (FileNotFoundException e) {
-            throw new ApiInException(0, "File not found: " + e.getMessage());
-        }
-    }
 
     @Override
     public boolean hasNext() throws ApiInException {
@@ -37,6 +30,20 @@ public class FromCSVFileDefinition implements ScriptIn {
             throw new ApiInException(count, "All lines have been read from input file");
 
         return getApiDefinition(scanner.nextLine());
+    }
+
+    @Override
+    public void setProperties(Properties properties) throws ApiInException {
+        try {
+            String inputFileName = properties.getProperty("csv.file.in");
+            if (inputFileName == null)
+                throw new ApiInException("No input file name has been defined ");
+
+            File csvFileInput = new File(inputFileName);
+            scanner = new Scanner(csvFileInput);
+        } catch (FileNotFoundException e) {
+            throw new ApiInException("File not found: " + e.getMessage());
+        }
     }
 
     private ApiDefinition getApiDefinition(String lineCSV) throws ApiInException {
@@ -62,7 +69,7 @@ public class FromCSVFileDefinition implements ScriptIn {
         List<String> methods = List.of("GET", "POST", "PUT", "DELETE");
         int method = methods.indexOf(methodName);
 
-        if (method < 0 || method > 4)
+        if (method < 0)
             throw new ApiInException(0, "Method " + methodName + " is not acceptable");
 
         return method;

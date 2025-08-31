@@ -7,7 +7,7 @@ import haroldo.stub.script.in.ApiInException;
 import haroldo.stub.script.out.ApiOutException;
 import haroldo.stub.script.summary.SummaryScript;
 
-import java.io.File;
+import java.util.Properties;
 
 public class FromCSVToNode {
     static String root = "ScriptTests/src/main/resources/";
@@ -16,8 +16,12 @@ public class FromCSVToNode {
         try {
             int listenerPort = readCommandLineParameters(args);
 
-            File in = new File(root + "OneLine.csv");
-            ScriptEngine engine = new ScriptEngine(new FromCSVFileDefinition(in), new ToStandaAloneNode(listenerPort));
+            FromCSVFileDefinition fromCSVFileDefinition = new FromCSVFileDefinition();
+            Properties properties = new Properties();
+            properties.put("csv.file.in", root + "OneLine.csv");
+            fromCSVFileDefinition.setProperties(properties);
+
+            ScriptEngine engine = new ScriptEngine(fromCSVFileDefinition, new ToStandaAloneNode(listenerPort));
             SummaryScript summaryScript = engine.configureAndRunAPIs();
 
             System.out.println(summaryScript.toString());

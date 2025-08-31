@@ -4,6 +4,7 @@ import haroldo.stub.api.Api;
 import haroldo.stub.api.DefaultApi;
 import haroldo.stub.runtime.DeployableApplication;
 import haroldo.stub.node.Node;
+import haroldo.stub.script.definition.Definition;
 import haroldo.stub.script.out.ApiConfigHandle;
 import haroldo.stub.script.out.ApiOutException;
 import haroldo.stub.script.out.ScriptOut;
@@ -11,6 +12,7 @@ import haroldo.stub.script.out.ScriptOut;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class ToStandaAloneNode implements ScriptOut {
     private final int port;
@@ -74,6 +76,10 @@ public class ToStandaAloneNode implements ScriptOut {
         for (int id : deployedApplicationIdList) {
             Node.startApplication(id);
         }
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
     }
 
     class ConfigHandle implements ApiConfigHandle {

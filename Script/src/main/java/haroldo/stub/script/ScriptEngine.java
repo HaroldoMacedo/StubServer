@@ -1,5 +1,6 @@
 package haroldo.stub.script;
 
+import haroldo.stub.script.definition.Definition;
 import haroldo.stub.script.in.ApiDefinition;
 import haroldo.stub.script.in.ApiInException;
 import haroldo.stub.script.in.ScriptIn;

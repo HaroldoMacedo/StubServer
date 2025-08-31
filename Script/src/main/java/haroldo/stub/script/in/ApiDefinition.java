@@ -1,6 +1,6 @@
 package haroldo.stub.script.in;
 
-import haroldo.stub.script.Definition;
+import haroldo.stub.script.definition.Definition;
 
 import java.util.ArrayList;
 import java.util.List;

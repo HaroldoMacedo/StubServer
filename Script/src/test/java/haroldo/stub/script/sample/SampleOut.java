@@ -1,9 +1,11 @@
 package haroldo.stub.script.sample;
 
-import haroldo.stub.script.Definition;
+import haroldo.stub.script.definition.Definition;
 import haroldo.stub.script.out.ApiConfigHandle;
 import haroldo.stub.script.out.ApiOutException;
 import haroldo.stub.script.out.ScriptOut;
+
+import java.util.Properties;
 
 public class SampleOut implements ScriptOut {
 
@@ -33,6 +35,10 @@ public class SampleOut implements ScriptOut {
     @Override
     public void startApplications() throws ApiOutException {
 
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
     }
 
     static class ConfigHandle implements ApiConfigHandle {

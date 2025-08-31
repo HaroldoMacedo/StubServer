@@ -1,11 +1,13 @@
 package haroldo.stub.script;
 
+import haroldo.stub.script.definition.DefaultDefinitionImpl;
 import haroldo.stub.script.in.ApiDefinition;
 import haroldo.stub.script.in.ApiInException;
 import haroldo.stub.script.in.ScriptIn;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 
 public class FromCodedApisDefinition implements ScriptIn {
@@ -48,6 +50,10 @@ public class FromCodedApisDefinition implements ScriptIn {
     @Override
     public ApiDefinition getNext() throws ApiInException {
         return apiDefinitions[nextDefinition++];
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
     }
 
 }

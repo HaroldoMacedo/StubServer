@@ -1,4 +1,4 @@
-package haroldo.stub.script;
+package haroldo.stub.script.definition;
 
 public interface Definition {
     int getMethod();

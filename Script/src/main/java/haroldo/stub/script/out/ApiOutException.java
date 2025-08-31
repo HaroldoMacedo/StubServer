@@ -1,6 +1,8 @@
 package haroldo.stub.script.out;
 
-public class ApiOutException extends Exception {
+import haroldo.stub.script.ScriptException;
+
+public class ApiOutException extends ScriptException {
     public ApiOutException(String message) {
         super(message);
     }
