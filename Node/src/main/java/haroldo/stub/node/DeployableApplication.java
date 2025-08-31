@@ -1,4 +1,4 @@
-package haroldo.stub.runtime;
+package haroldo.stub.node;
 
 import com.sun.net.httpserver.HttpHandler;
 import haroldo.stub.api.Api;
@@ -19,7 +19,7 @@ public class DeployableApplication {
         return id;
     }
 
-    public void setId(int id) {
+    void setId(int id) {
         this.id = id;
     }
 

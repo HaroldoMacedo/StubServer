@@ -5,7 +5,7 @@ import haroldo.stub.api.DefaultApi;
 import haroldo.stub.api.agent.model.Application;
 import haroldo.stub.api.agent.model.Listener;
 import haroldo.stub.api.agent.model.ResourceId;
-import haroldo.stub.runtime.DeployableApplication;
+import haroldo.stub.node.DeployableApplication;
 import haroldo.stub.node.Node;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

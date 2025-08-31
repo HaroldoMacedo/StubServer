@@ -2,7 +2,7 @@ package haroldo.stub.script;
 
 import haroldo.stub.api.Api;
 import haroldo.stub.api.DefaultApi;
-import haroldo.stub.runtime.DeployableApplication;
+import haroldo.stub.node.DeployableApplication;
 import haroldo.stub.node.Node;
 import haroldo.stub.script.definition.Definition;
 import haroldo.stub.script.out.ApiConfigHandle;
