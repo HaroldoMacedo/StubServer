@@ -7,15 +7,13 @@ public class DeployedApplicationUsageMetric {
     private final AvgStdDev avgLatency = new AvgStdDev();
     private final MaxMin firstLastRequest = new MaxMin();
 
-    private int method;
-
-    void setLatencyMs(int method, long timeMs) {
+    void setLatencyMs(long timeMs) {
         synchronized (this) {
             requestCount++;
             sumLatencyInStub += timeMs;
         }
         maxMinLatency.addSample(timeMs);
-        avgLatency.addTimeMs(timeMs);
+        avgLatency.addValue(timeMs);
         firstLastRequest.addSample(System.currentTimeMillis());
     }
 

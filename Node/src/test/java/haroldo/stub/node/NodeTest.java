@@ -1,9 +1,10 @@
 package haroldo.stub.node;
 
 import haroldo.stub.TestUtils;
+import haroldo.stub.application.*;
+import haroldo.stub.operation.Operation;
+import haroldo.stub.operation.OperationImpl;
 import org.junit.jupiter.api.Test;
-import haroldo.stub.api.Api;
-import haroldo.stub.api.DefaultApi;
 
 import java.io.IOException;
 
@@ -69,14 +70,16 @@ public class NodeTest {
     }
 
     @Test
-    void deployApplicationTest() {
+    void deployApplicationTest() throws DeployException {
         System.out.println("Start of deploying application test");
 
-        Api api = new DefaultApi(uri, "Hello World!", 100);
-        DeployableApplication deployableApplication = new DeployableApplication("Hello", api, 10);
-
         Node.createListener(port);
-        int id = Node.deployApplication(port, deployableApplication);
+
+        Operation operation = new OperationImpl("Hello", 0, uri);
+        NonFunctionaRequirements nfrs = new NonFunctionaRequirements(100, 100);
+        MessageGenerator messageGenerator = new DefaultMessageGenerator("Hello World!");
+        int id = Node.deployApplication(port, operation, nfrs, messageGenerator);
+
         Node.undeployApplication(id);
         Node.stopListener(port);
 
@@ -84,14 +87,15 @@ public class NodeTest {
     }
 
     @Test
-    void undeployApplicationTest() {
+    void undeployApplicationTest() throws DeployException {
         System.out.println("Start of undeploying application test");
 
-        Api api = new DefaultApi(uri, "Hello World!", 100);
-        DeployableApplication deployableApplication = new DeployableApplication("Hello", api, 10);
-
         Node.createListener(port);
-        int id = Node.deployApplication(port, deployableApplication);
+
+        Operation operation = new OperationImpl("Hello", 0, uri);
+        NonFunctionaRequirements nfrs = new NonFunctionaRequirements(100, 100);
+        MessageGenerator messageGenerator = new DefaultMessageGenerator("Hello World!");
+        int id = Node.deployApplication(port, operation, nfrs, messageGenerator);
 
         Node.undeployApplication(id);
         Node.stopApplication(id);
@@ -101,11 +105,10 @@ public class NodeTest {
     }
 
     @Test
-    void startApplicationTest() throws IOException {
+    void startApplicationTest() throws IOException, DeployException {
         System.out.println("Start of starting application test");
         Node.createListener(port);
         int id = createAndStartApplication(port, appName, uri);
-
 
         Node.undeployApplication(id);
         Node.stopListener(port);
@@ -115,8 +118,9 @@ public class NodeTest {
     }
 
     @Test
-    void startApplicationTwiceTest() throws IOException {
+    void startApplicationTwiceTest() throws IOException, DeployException {
         System.out.println("Start of starting application test");
+        Node.createListener(port);
         int id = createAndStartApplication(port, appName, uri);
         try {
             Node.startApplication(id);
@@ -132,8 +136,9 @@ public class NodeTest {
     }
 
     @Test
-    void stopApplicationTest() throws IOException {
+    void stopApplicationTest() throws IOException, DeployException {
         System.out.println("Start of stopping application test");
+        Node.createListener(port);
         int id = createAndStartApplication(port, appName, uri);
 
         Node.stopApplication(id);
@@ -149,8 +154,9 @@ public class NodeTest {
     }
 
     @Test
-    void stopTwiceApplicationTest() throws IOException {
+    void stopTwiceApplicationTest() throws IOException, DeployException {
         System.out.println("Start of stopping application test");
+        Node.createListener(port);
         int id = createAndStartApplication(port, appName, uri);
 
         assert(Node.stopApplication(id));
@@ -169,22 +175,23 @@ public class NodeTest {
         System.out.println("End of stop application test");
     }
 
-    private int createAndStartApplication(int port, String name, String uri) throws IOException {
+    private int createAndStartApplication(int port, String name, String uri) throws IOException, DeployException {
         assert (!TestUtils.isPortOpen(port));
         assert (!TestUtils.isEndpointResponding(port, uri));
 
-        Api api = new DefaultApi( uri, "{\n\"message\": \"Hello World!\"\n}", 100);
-        DeployableApplication deployableApplication = new DeployableApplication(name, api, 10);
+        Operation operation = new OperationImpl(name, "GET", uri);
+        NonFunctionaRequirements nfrs = new NonFunctionaRequirements(100, 10);
+        MessageGenerator messageGenerator = new DefaultMessageGenerator("{\n\"message\": \"Hello World!\"\n}");
+        int id = Node.deployApplication(port, operation, nfrs, messageGenerator);
 
         Node.startListener(port);
         assert (TestUtils.isPortOpen(port));
 
-        int id = Node.deployApplication(port, deployableApplication);
         Node.startApplication(id);
         assert (TestUtils.isPortOpen(port));
 
         try {
-            Thread.sleep(200);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

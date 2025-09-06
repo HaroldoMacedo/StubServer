@@ -1,12 +1,12 @@
 package haroldo.stub.api.agent.controller;
 
-import haroldo.stub.api.Api;
-import haroldo.stub.api.DefaultApi;
 import haroldo.stub.api.agent.model.Application;
 import haroldo.stub.api.agent.model.Listener;
 import haroldo.stub.api.agent.model.ResourceId;
-import haroldo.stub.node.DeployableApplication;
+import haroldo.stub.application.*;
 import haroldo.stub.node.Node;
+import haroldo.stub.operation.Operation;
+import haroldo.stub.operation.OperationImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,17 +18,17 @@ public class NodeAgentController {
     private static final String CONTEXT = "/stub/execution";
 
     @PutMapping(CONTEXT + "/listener/port/{port}")
-    public ResponseEntity<?> startListener(@RequestBody Listener listener, @PathVariable(name="port") int port) {
-        System.out.println("Request to start localhost at " + port);
-
+    public ResponseEntity<?> startListener(@RequestBody Listener listener, @PathVariable(name = "port") int port) {
         try {
+            System.out.println("Request to start localhost at " + port);
+
             Node.startListener(port);
+
+            System.out.println("Localhost server started using port " + port);
+            return new ResponseEntity<>(new ResourceId(CONTEXT + "/listener/port", port), HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        System.out.println("Localhost server started using port " + port);
-        return new ResponseEntity<>(new ResourceId(CONTEXT + "/listener/port", port), HttpStatus.OK);
     }
 
     @DeleteMapping(CONTEXT + "/listener/port/{port}")
@@ -43,14 +43,20 @@ public class NodeAgentController {
 
     @PutMapping(CONTEXT + "/listener/port/{port}/application")
     public ResponseEntity<?> deployApplication(@PathVariable(name = "port") int port, @RequestBody Application application) {
-        System.out.println("Request to deploy application " + application.getName() + " in port " + port);
+        try {
+            System.out.println("Request to deploy application " + application.getName() + " in port " + port);
 
-        Api api = new DefaultApi(application.getUri(), application.getResponseMessage(), application.getLatencyMs());
-        DeployableApplication deployableApplication = new DeployableApplication(application.getName(), api, application.getMaxThroughtputTPS());
-        int id = Node.deployApplication(port, deployableApplication);
+            Operation operation = new OperationImpl(application.getName(), application.getMethod(), application.getUri());
+            NonFunctionaRequirements nfrs = new NonFunctionaRequirements(application.getLatencyMs(), application.getMaxThroughtputTPS());
+            MessageGenerator messageGenerator = new DefaultMessageGenerator(application.getResponseMessage());
 
-        ResourceId resourceId = new ResourceId(CONTEXT + "/listener/application", id);
-        return new ResponseEntity<>(resourceId, HttpStatus.OK);
+            int id = Node.deployApplication(port, operation, nfrs, messageGenerator);
+
+            ResourceId resourceId = new ResourceId(CONTEXT + "/listener/application", id);
+            return new ResponseEntity<>(resourceId, HttpStatus.OK);
+        } catch (DeployException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @DeleteMapping(CONTEXT + "/listener/application/{applicationId}")
@@ -58,7 +64,7 @@ public class NodeAgentController {
         System.out.println("Request to un-deploy application " + applicationId);
         int id = Integer.parseInt(applicationId);
 
-        if (! Node.undeployApplication(id))
+        if (!Node.undeployApplication(id))
             return new ResponseEntity<>("No application un-deployed!", HttpStatus.ACCEPTED);     //  TODO: Fix this return.
 
         return new ResponseEntity<>(null, HttpStatus.OK);
@@ -68,7 +74,7 @@ public class NodeAgentController {
     public ResponseEntity<?> startApplication(@PathVariable(name = "applicationId") int applicationId) {
         System.out.println("Request to start application " + applicationId);
 
-        if(!Node.startApplication(applicationId))
+        if (!Node.startApplication(applicationId))
             return new ResponseEntity<>("Error to start application " + applicationId, HttpStatus.NOT_FOUND);     //  TODO: Fix this return.
 
         ResourceId resourceId = new ResourceId(CONTEXT + "/application", applicationId);

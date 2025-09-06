@@ -11,7 +11,7 @@ public class AvgStdDevTest {
         Random rand = new Random(0);
         AvgStdDev avgStdDev = new AvgStdDev();
 
-        final int numberOfValues = 100000;
+        final int numberOfValues = 1000000;
         long[] values = new long[numberOfValues];
         for (int i = 0; i < numberOfValues; i++) {
             values[i] = Math.round(rand.nextGaussian(2000, 200));
@@ -19,7 +19,7 @@ public class AvgStdDevTest {
 
         long ns = System.nanoTime();
         for (int i = 0; i < numberOfValues; i++) {
-            avgStdDev.addTimeMs(values[i]);
+            avgStdDev.addValue(values[i]);
         }
         ns = System.nanoTime() - ns;
 
@@ -29,5 +29,7 @@ public class AvgStdDevTest {
 
         assert(Math.abs(avgStdDev.getAvg() - 2000) <= 2);
         assert(Math.abs(avgStdDev.getStdDev() - 200) <= 4);
+        assert(avgStdDev.getMin() <= avgStdDev.getAvg());
+        assert (avgStdDev.getMax() >= avgStdDev.getAvg());
     }
 }

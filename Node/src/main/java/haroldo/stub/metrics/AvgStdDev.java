@@ -5,26 +5,26 @@ public class AvgStdDev {
     private long sum;
     private final MaxMin maxMin = new MaxMin();
     private float avg = 0;
-    private float stdDevSquare = 0;
+    private double variance = 0;
 
-    public synchronized void addTimeMs(long timeMs) {
-        maxMin.addSample(timeMs);
+    public synchronized void addValue(long value) {
+        maxMin.addSample(value);
         count++;
-        sum += timeMs;
-        calvAvgAndStdDev(timeMs);
+        sum += value;
+        calcAverageAndVariance(value);
     }
 
-    private void calvAvgAndStdDev(long timeMs) {
+    private void calcAverageAndVariance(long value) {
         if (count == 0)
             return;
 
         float newAvg = (float) sum / count;
         if (count == 1) {
-            stdDevSquare = (timeMs - newAvg) * (timeMs - avg);
+            variance = (value - newAvg) * (value - avg);
             return;
         }
 
-        stdDevSquare =  ((count - 2) * stdDevSquare + (timeMs - newAvg) * (timeMs - avg)) / (count - 1);
+        variance =  ((count - 2) * variance + (value - newAvg) * (value - avg)) / (count - 1);
         avg = newAvg;
     }
 
@@ -33,7 +33,7 @@ public class AvgStdDev {
     }
 
     public float getStdDev() {
-        return (float) Math.sqrt(stdDevSquare);
+        return (float) Math.sqrt(variance);
     }
 
     public long getMax() {

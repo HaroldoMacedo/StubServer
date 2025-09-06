@@ -1,5 +1,8 @@
 package haroldo.stub.node;
 
+import haroldo.stub.application.*;
+import haroldo.stub.operation.Operation;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,20 +44,23 @@ public class Node {
         System.out.println("Listener stopped on port " + port);
     }
 
-    public static int deployApplication(int port, DeployableApplication deployableApplication) {
-        System.out.println("Deploying application " + deployableApplication.getName() + " on port " + port);
+    public static int deployApplication(int port, Operation operation, NonFunctionaRequirements nfrs,
+                                        MessageGenerator messageGenerator) throws DeployException {
+        System.out.println("Deploying application " + operation.getOperationName() + " on port " + port);
 
-        if (findApplication(deployableApplication.getName()) != null)   //  Name must be unique
+        if (findApplication(operation.getOperationName()) != null)   //  Name must be unique
             return 0;
 
         Listener listener = listenerList.get(port);
         if (listener == null)
             return 0;
 
+        DeployedApplication deployedApplication = new DeployedApplicationImpl(operation, nfrs, messageGenerator);
+
         int id = getNextApplicationId();
-        deployableApplication.setId(id);
-        listener.deployApplication(deployableApplication);
-        System.out.println("Application " + deployableApplication.getName() + " deployed on port " + port);
+        deployedApplication.setId(id);
+        listener.deployApplication(deployedApplication);
+        System.out.println("Application " + deployedApplication.getOperationName() + " deployed on port " + port);
 
         return id;
     }
@@ -97,19 +103,19 @@ public class Node {
         return true;
     }
 
-    private static DeployableApplication findApplication(String applicationName) {
+    private static DeployedApplication findApplication(String applicationName) {
         for (Listener listener : listenerList.values()) {
-            DeployableApplication deployableApplication = listener.getApplicationByName(applicationName);
-            if (deployableApplication != null)
-                return deployableApplication;
+            DeployedApplication deployedApplication = listener.getApplicationByName(applicationName);
+            if (deployedApplication != null)
+                return deployedApplication;
         }
         return null;
     }
 
     private static Listener findListenerForApplicationId(int applcationId) {
         for (Listener listener : listenerList.values()) {
-            DeployableApplication deployableApplication = listener.getApplicationById(applcationId);
-            if (deployableApplication != null)
+            DeployedApplication deployedApplication = listener.getApplicationById(applcationId);
+            if (deployedApplication != null)
                 return listener;
         }
         return null;

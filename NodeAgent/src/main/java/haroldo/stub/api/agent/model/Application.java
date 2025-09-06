@@ -2,6 +2,7 @@ package haroldo.stub.api.agent.model;
 
 public class Application {
     private String name = "Hello";
+    private String method = "GET";
     private String uri = "/hello";
 
     private int latencyMs = 100;
@@ -23,6 +24,14 @@ public class Application {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
     }
 
     public String getUri() {

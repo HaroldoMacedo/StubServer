@@ -1,9 +1,8 @@
 package haroldo.stub.script;
 
-import haroldo.stub.api.Api;
-import haroldo.stub.api.DefaultApi;
-import haroldo.stub.node.DeployableApplication;
+import haroldo.stub.application.*;
 import haroldo.stub.node.Node;
+import haroldo.stub.operation.OperationImpl;
 import haroldo.stub.script.definition.Definition;
 import haroldo.stub.script.out.ApiConfigHandle;
 import haroldo.stub.script.out.ApiOutException;
@@ -28,7 +27,7 @@ public class ToStandaAloneNode implements ScriptOut {
     }
 
     @Override
-    public ApiConfigHandle configApi(String name, String uri, int maxThroughputTPS){
+    public ApiConfigHandle configApi(String name, String uri, int maxThroughputTPS) {
         definitions = new ArrayList<>();
         this.name = name;
         this.uri = uri;
@@ -39,20 +38,17 @@ public class ToStandaAloneNode implements ScriptOut {
 
     @Override
     public int commit() throws ApiOutException {
-        Api api = new DefaultApi(uri, 100);
-        for (Definition definition : definitions) {
-            switch (definition.getMethod()) {
-                case Api.GET -> api.addGetResponse(definition.getMessage(), definition.getLatencyMs());
-                case Api.POST -> api.addPostResponse(definition.getMessage(), definition.getLatencyMs());
-                case Api.PUT -> api.addPutResponse(definition.getMessage(), definition.getLatencyMs());
-                case Api.DELETE -> api.addDeleteResponse(definition.getMessage(), definition.getLatencyMs());
-                default -> throw new ApiOutException("Method " + definition.getMethod() + " not recognized");
-            }
+        int id;
+        try {
+            var operation = new OperationImpl("Hello!", "GET", "/hello");
+            var nfrs = new NonFunctionaRequirements(100, 10);
+            var messageGenerator = new DefaultMessageGenerator("Hello World!");
+            id = Node.deployApplication(port, operation, nfrs, messageGenerator);
+            deployedApplicationIdList.add(id);
+            definitions = null;
+        } catch (DeployException d) {
+            throw new ApiOutException(d.getMessage());
         }
-
-        int id = Node.deployApplication(port, new DeployableApplication(name, api, maxThroughputTPS));
-        deployedApplicationIdList.add(id);
-        definitions = null;
 
         return id;
     }

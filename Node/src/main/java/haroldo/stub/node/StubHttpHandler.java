@@ -3,87 +3,80 @@ package haroldo.stub.node;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import haroldo.stub.api.Api;
-import haroldo.stub.api.Response;
+import haroldo.stub.operation.AppsDeployed;
+import haroldo.stub.application.DeployException;
+import haroldo.stub.application.DeployedApplication;
+import haroldo.stub.metrics.StubStatistics;
+import haroldo.stub.throttle.Throttle;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 class StubHttpHandler implements HttpHandler {
-    final Api api;
-    private final long timeBetweenRequestReceivedNanoSec;
-    private long lastRequestReceivedNanoSec = 0;
-
-    private static final int COUNTPERPRINT = 100;
-
-    StubHttpHandler(int maxThroughPutPerSecond, Api api) {
-        this.api = api;
-        long nanoSecPerSecond = 1000000000;
-        this.timeBetweenRequestReceivedNanoSec = nanoSecPerSecond / maxThroughPutPerSecond;
-    }
+    private final AppsDeployed appsDeployed;
 
     private int count = 0;
 
+    public StubHttpHandler(AppsDeployed appsDeployed) {
+        this.appsDeployed = appsDeployed;
+        System.out.println("\tStarting StubHttpHandler - normally");
+    }
+
     @Override
     public void handle(HttpExchange exchange) {
-        if (++count % COUNTPERPRINT == 0)
-            System.out.println(now() + " - " + count + ": Request '" + exchange.getRequestMethod() + " " + exchange.getRequestURI() + "' received!");
-
-        switch (exchange.getRequestMethod()) {
-            case "GET":
-                respondRequest(exchange, api.getNextGetResponse());
-                break;
-            case "POST":
-                respondRequest(exchange, api.getNextPostResponse());
-                break;
-            case "PUT":
-                respondRequest(exchange, api.getNextPutResponse());
-                break;
-            case "DELETE":
-                respondRequest(exchange, api.getNextDeleteResponse());
-                break;
-            default:
-                System.err.println("Method '" + exchange.getRequestMethod() + "' is not implemented.");
-        }
-        if (count % COUNTPERPRINT == 0)
-            System.out.println(now() + " - " + count + ": Responded to '" + exchange.getRequestMethod() + " " + exchange.getRequestURI() + "'");
-    }
-
-    private void respondRequest(HttpExchange exchange, Response response) {
         try {
-            throttle();
-            OutputStream os = exchange.getResponseBody();
-            Thread.sleep(response.getLatencyMs());
-            byte[] message = response.getMessage().getBytes();
-            exchange.sendResponseHeaders(200, message.length);
-            os.write(message);
-            os.close();
+            boolean print = (++count % 100) == 0;
+            if (print)
+                System.out.println(now() + " - " + count + ": Request '" + exchange.getRequestMethod() + " " + exchange.getRequestURI() + "' received!");
 
-        } catch (InterruptedException | IOException e) {
-            throw new RuntimeException(e);
+            DeployedApplication app = appsDeployed.getApp(exchange.getRequestMethod(), exchange.getRequestURI().getPath());
+            long requestId = app.requestStart();
+
+            app.throttleMaxThroughput();
+
+            responseMessage(exchange, 200, app.getNextMessage());
+
+            if (print)
+                System.out.println(now() + " - " + count + ": Responded to '" + exchange.getRequestMethod() + " " + exchange.getRequestURI() + "'");
+
+            app.requestEnd(requestId);
+        } catch (DeployException e) {
+            String message = "Method '" + exchange.getRequestMethod() + " " + exchange.getRequestURI().getPath() + "' is not deployed: " + e.getMessage();
+            System.err.println(message);
+            responseMessageNoExceptionThrown(exchange, 404, message);
+        } catch (IOException e) {
+            String message = "Error: Method '" + exchange.getRequestMethod() + " " + exchange.getRequestURI().getPath() + "': " + e.getMessage();
+            System.err.println(message);
+            responseMessageNoExceptionThrown(exchange, 500, message);
+        } catch (InterruptedException e) {
+            String message = "Interrupted: Method '" + exchange.getRequestMethod() + " " + exchange.getRequestURI().getPath() + "': " + e.getMessage();
+            System.err.println(message);
+            responseMessageNoExceptionThrown(exchange, 500, message);
         }
     }
 
-    private synchronized void throttle() {
-        long waitNanoSec = (lastRequestReceivedNanoSec + timeBetweenRequestReceivedNanoSec) - System.nanoTime();
-        lastRequestReceivedNanoSec = System.nanoTime();
+    private void responseMessage(HttpExchange exchange, int httpCode, String message) throws IOException {
+        byte[] msg = message.getBytes();
+        OutputStream os = exchange.getResponseBody();
+        exchange.sendResponseHeaders(httpCode, msg.length);
+        os.write(msg);
+        os.close();
+    }
 
-        if (waitNanoSec <= 0)
-            return;
-
+    private void responseMessageNoExceptionThrown(HttpExchange exchange, int httpCode, String message) {
         try {
-            if (waitNanoSec < 1000000)
-                Thread.sleep(0, (int)waitNanoSec);
-            else
-                Thread.sleep(waitNanoSec / 1000000, (int)waitNanoSec % 1000000);
-        } catch (InterruptedException e) {}
-
-        lastRequestReceivedNanoSec = System.nanoTime();
+            responseMessage(exchange, httpCode, message);
+        } catch (IOException e) {
+            // Ignore error!
+        }
     }
 
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MMM-yy HH:mm:ss.SSS");
+
     private String now() {
         return LocalDateTime.now().format(dateFormat);
     }
