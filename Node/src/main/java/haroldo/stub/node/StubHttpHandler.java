@@ -3,18 +3,14 @@ package haroldo.stub.node;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import haroldo.stub.operation.AppsDeployed;
 import haroldo.stub.application.DeployException;
 import haroldo.stub.application.DeployedApplication;
-import haroldo.stub.metrics.StubStatistics;
-import haroldo.stub.throttle.Throttle;
+import haroldo.stub.operation.AppsDeployed;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
 
 class StubHttpHandler implements HttpHandler {
     private final AppsDeployed appsDeployed;

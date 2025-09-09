@@ -34,13 +34,14 @@ public class Throttle {
     private long sleepTimeMS() {
         long thisWakeTimestampMS;
         synchronized (lastResponseTimestampMS) {
-            thisWakeTimestampMS = Math.max(System.currentTimeMillis() + latencyMS, lastResponseTimestampMS[oldest]);
-            lastResponseTimestampMS[oldest] = Math.min(thisWakeTimestampMS, System.currentTimeMillis() + 1000);
+            long now = System.currentTimeMillis();
+            thisWakeTimestampMS = Math.max(now + latencyMS, lastResponseTimestampMS[oldest]);
+            lastResponseTimestampMS[oldest] = Math.max(lastResponseTimestampMS[oldest], now + Math.min(latencyMS, 1000)) + 1000;
             if (++oldest >= lastResponseTimestampMS.length)
                 oldest = 0;
         }
-        thisWakeTimestampMS = thisWakeTimestampMS - System.currentTimeMillis();
-        return (thisWakeTimestampMS > 0 ? thisWakeTimestampMS : 0);
+        long sleepMS = thisWakeTimestampMS - System.currentTimeMillis();
+        return (sleepMS > 0 ? sleepMS : 0);
     }
 
     private void statRequestEnterQueue(long queueTimeMS) {

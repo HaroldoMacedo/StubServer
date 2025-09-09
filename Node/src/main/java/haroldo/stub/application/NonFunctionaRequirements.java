@@ -4,7 +4,12 @@ public class NonFunctionaRequirements {
     private long avgLatencyMS;
     private int maxThrhoughputTPS;
 
-    public NonFunctionaRequirements(long avgLatencyMS, int maxThrhoughputTPS) {
+    public NonFunctionaRequirements(long avgLatencyMS, int maxThrhoughputTPS) throws DeployException {
+        if (maxThrhoughputTPS <= 0)
+            throw new DeployException("Max throuhgput must be a positive number");
+        if (avgLatencyMS < 0)
+            throw new DeployException("Latency cannot be a negative number");
+
         this.avgLatencyMS = avgLatencyMS;
         this.maxThrhoughputTPS = maxThrhoughputTPS;
     }
