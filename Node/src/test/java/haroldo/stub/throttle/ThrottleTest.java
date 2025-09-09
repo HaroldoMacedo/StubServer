@@ -10,8 +10,6 @@ import java.util.Random;
 public class ThrottleTest implements Runnable {
 
     Throttle throttle;
-    Integer threadId = 0;
-    Random rnd = new Random(System.currentTimeMillis());
 
     @Test
     public void throughput20TpsLatency10MsTest() throws DeployException {
@@ -64,9 +62,10 @@ public class ThrottleTest implements Runnable {
         runTest(maxTransactions, latencyMS, maxTrhoughputTPS, 0);
     }
 
-    private AvgStdDev statResponseTimeMS = new AvgStdDev();
+    private AvgStdDev statResponseTimeMS;
     private void runTest(int maxTransactions, long latencyMS, int maxTrhoughputTPS, int loadTPS) throws DeployException {
         try {
+            statResponseTimeMS = new AvgStdDev();
             long ms = System.currentTimeMillis();
             NonFunctionaRequirements nfr = new NonFunctionaRequirements(latencyMS, maxTrhoughputTPS);
             long waitTime = 0;
@@ -92,7 +91,7 @@ public class ThrottleTest implements Runnable {
             ms = System.currentTimeMillis() - ms;
             System.out.println("Total time was " + ms + "ms");
             System.out.println("Avg Latency = " + statResponseTimeMS.getAvg() + "ms | Std Dev = " + statResponseTimeMS.getStdDev());
-            int throughput = (int) Math.round((float) 1000 * maxTransactions / (ms + 1000));
+            int throughput = Math.round((float) 1000 * maxTransactions / (ms + 1000));
             System.out.println("Throughput = " + throughput + "TPS");
 
             assert (Math.abs(nfr.getMaxThroughputTPS()) - throughput < 2);
@@ -104,11 +103,6 @@ public class ThrottleTest implements Runnable {
 
     @Override
     public void run() {
-        int threadId;
-        synchronized (this.threadId) {
-            threadId = this.threadId++;
-        }
-
         long ms = System.currentTimeMillis();
         try {
             throttle.toMaxThroughput();
