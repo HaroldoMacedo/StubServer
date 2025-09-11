@@ -7,6 +7,7 @@ import haroldo.stub.throttle.Throttle;
 public class DeployedApplicationImpl implements DeployedApplication, MessageGenerator {
     private final Operation operation;
     private final MessageGenerator messageGenerator;
+    private boolean isStarted = false;
 
     private final Throttle throttle;
 
@@ -14,6 +15,8 @@ public class DeployedApplicationImpl implements DeployedApplication, MessageGene
     private final AvgStdDev statResponseTimeMS = new AvgStdDev();
 
     private int id;
+    public final String uriRegEx;
+
     private Long timestampSecondOfLastResponse = 0L;
     private int countResponses = 0;
 
@@ -25,6 +28,8 @@ public class DeployedApplicationImpl implements DeployedApplication, MessageGene
         String uri = operation.getUri();
         if (uri.charAt(0) != '/')
             throw new DeployException("URI must start with '/'");
+        if (uri.charAt(uri.length() - 1) != '/')
+            throw new DeployException("URI must end with '/'");
         if (uri.length() < 2)
             throw new DeployException("URI must have at least 2 characters");
         if (nfrs.getAvgLatencyMS() < 0)
@@ -35,6 +40,22 @@ public class DeployedApplicationImpl implements DeployedApplication, MessageGene
         this.operation = operation;
         this.messageGenerator = messageGenerator;
         this.throttle = new Throttle(nfrs);
+        this.uriRegEx = operation.getUri().replaceAll("/\\{.*?\\}/", "/[0-9]*/");
+    }
+
+    @Override
+    public void setStarted() {
+        isStarted = true;
+    }
+
+    @Override
+    public void setStopped() {
+        isStarted = false;
+    }
+
+    @Override
+    public boolean isStarted() {
+        return isStarted;
     }
 
     @Override
@@ -73,12 +94,12 @@ public class DeployedApplicationImpl implements DeployedApplication, MessageGene
     }
 
     @Override
-    public long requestStart() {
+    public long setIncomingRequestStart() {
         return System.currentTimeMillis();
     }
 
     @Override
-    public void requestEnd(long requestId) {
+    public void setIncomingRequestEnd(long requestId) {
         long now = System.currentTimeMillis();
         statResponseTimeMS.addValue(now - requestId);
         calculateThroughputTPS(now);

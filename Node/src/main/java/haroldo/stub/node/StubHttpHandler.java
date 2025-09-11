@@ -30,16 +30,17 @@ class StubHttpHandler implements HttpHandler {
                 System.out.println(now() + " - " + count + ": Request '" + exchange.getRequestMethod() + " " + exchange.getRequestURI() + "' received!");
 
             DeployedApplication app = appsDeployed.getApp(exchange.getRequestMethod(), exchange.getRequestURI().getPath());
-            long requestId = app.requestStart();
+            if (!app.isStarted())
+                throw new DeployException("Application is stoppped");
 
+            long requestId = app.setIncomingRequestStart();
             app.throttleMaxThroughput();
-
             responseMessage(exchange, 200, app.getNextMessage());
+            app.setIncomingRequestEnd(requestId);
 
             if (print)
                 System.out.println(now() + " - " + count + ": Responded to '" + exchange.getRequestMethod() + " " + exchange.getRequestURI() + "'");
 
-            app.requestEnd(requestId);
         } catch (DeployException e) {
             String message = "Method '" + exchange.getRequestMethod() + " " + exchange.getRequestURI().getPath() + "' is not deployed: " + e.getMessage();
             System.err.println(message);

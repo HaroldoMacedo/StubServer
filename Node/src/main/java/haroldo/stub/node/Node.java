@@ -41,6 +41,7 @@ public class Node {
         if (listener == null)
             return;
         listener.stop();
+        listenerList.remove(port);
         System.out.println("Listener stopped on port " + port);
     }
 

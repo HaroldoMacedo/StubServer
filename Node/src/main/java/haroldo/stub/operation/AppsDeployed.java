@@ -28,13 +28,13 @@ public class AppsDeployed {
         System.out.println("Deployed App '" + methodNameArray[method] + " " + uri + "' with latency of " + avgLatencyMS + "ms and max throughput of " + maxThroughputTPS + "TPS");
     }
 
-    private void deploy(DeployedApplication newApplication) throws DeployException {
+    private void deploy(DeployedApplication application) throws DeployException {
         if (!appDeployedList.isEmpty()) {
-            int appIndex = appDeployedList.indexOf(newApplication);
-            if (appIndex < 0)
-                throw new DeployException("Cannot deploy '" + newApplication.getUri() + "', similar app already deployed as '" + newApplication.getUri() + "'");
+            int appIndex = appDeployedList.indexOf(application);
+            if (appIndex >= 0)
+                throw new DeployException("Cannot deploy '" + application.getUri() + "', similar app already deployed");
         }
-        appDeployedList.add(newApplication);
+        appDeployedList.add(application);
     }
 
     public DeployedApplication getApp(String method, String uri) throws DeployException {
@@ -81,6 +81,21 @@ public class AppsDeployed {
         }
 
         @Override
+        public void setStarted() {
+
+        }
+
+        @Override
+        public void setStopped() {
+
+        }
+
+        @Override
+        public boolean isStarted() {
+            return false;
+        }
+
+        @Override
         public int getId() {
             return id;
         }
@@ -116,12 +131,12 @@ public class AppsDeployed {
         }
 
         @Override
-        public long requestStart() {
+        public long setIncomingRequestStart() {
             return 0;
         }
 
         @Override
-        public void requestEnd(long requestId) {
+        public void setIncomingRequestEnd(long requestId) {
 
         }
 
@@ -130,17 +145,8 @@ public class AppsDeployed {
             if (!(obj instanceof DeployedApplication))
                 return false;
 
-            int firstSlashPos = uri.substring(2).indexOf('/');
-            if (firstSlashPos < 0)
-                firstSlashPos = uri.length();
-            else
-                firstSlashPos += 2;
-
-            DeployedApplication deployedApplication = (DeployedApplication) obj;
-            if (firstSlashPos > deployedApplication.getUri().length())
-                return false;
-
-            return uri.substring(0, firstSlashPos).equals(deployedApplication.getUri().substring(0, firstSlashPos)) && method == ((DeployedApplication) obj).getHttpMethod();
+            DeployedApplicationImpl deployedApplication = (DeployedApplicationImpl) obj;
+            return uri.matches(deployedApplication.uriRegEx) && method == deployedApplication.getHttpMethod();
         }
 
         @Override

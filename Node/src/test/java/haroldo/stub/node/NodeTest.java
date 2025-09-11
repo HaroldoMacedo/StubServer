@@ -1,7 +1,10 @@
 package haroldo.stub.node;
 
 import haroldo.stub.TestUtils;
-import haroldo.stub.application.*;
+import haroldo.stub.application.DefaultMessageGenerator;
+import haroldo.stub.application.DeployException;
+import haroldo.stub.application.MessageGenerator;
+import haroldo.stub.application.NonFunctionaRequirements;
 import haroldo.stub.operation.Operation;
 import haroldo.stub.operation.OperationImpl;
 import org.junit.jupiter.api.Test;
@@ -10,7 +13,7 @@ import java.io.IOException;
 
 public class NodeTest {
     private int port = 8082;
-    private String uri = "/hello";
+    private String uri = "/hello/";
     private String appName = "Hello!";
 
     @Test
@@ -118,16 +121,78 @@ public class NodeTest {
     }
 
     @Test
+    void startTwoApplicationTest() throws IOException, DeployException {
+        System.out.println("Start of starting application test");
+        Node.createListener(port);
+        int id1 = createAndStartApplication(port, appName, uri);
+        appName = "Alo!";
+        uri = "/alo/";
+        int id2 = createAndStartApplication(port, appName, uri);
+
+        Node.undeployApplication(id1);
+        Node.undeployApplication(id2);
+        Node.stopListener(port);
+        assert (!TestUtils.isEndpointResponding(port, uri));
+        assert (!TestUtils.isPortOpen(port));
+        System.out.println("End of start application test");
+    }
+
+    @Test
+    void startTwoApplicationSamePathTest() throws IOException, DeployException {
+        System.out.println("Start of starting application test");
+        Node.createListener(port);
+        int id1 = createAndStartApplication(port, appName, uri);
+        appName = "Hello2!";
+        uri = "/hello/alo/";
+        int id2 = createAndStartApplication(port, appName, uri);
+
+        Node.undeployApplication(id1);
+        Node.undeployApplication(id2);
+        Node.stopListener(port);
+        assert (!TestUtils.isEndpointResponding(port, uri));
+        assert (!TestUtils.isPortOpen(port));
+        System.out.println("End of start application test");
+    }
+
+    @Test
+    void startTwoApplicationSameSubPathTest() throws IOException, DeployException {
+        System.out.println("Start of starting application test");
+        Node.createListener(port);
+        uri = "/hello/hello/";
+        int id1 = createAndStartApplication(port, appName, uri);
+        appName = "Hello2!";
+        uri = "/hello/alo/";
+        int id2 = createAndStartApplication(port, appName, uri);
+
+        Node.undeployApplication(id1);
+        Node.undeployApplication(id2);
+        Node.stopListener(port);
+        assert (!TestUtils.isEndpointResponding(port, uri));
+        assert (!TestUtils.isPortOpen(port));
+        System.out.println("End of start application test");
+    }
+
+    @Test
+    void startApplicationRegExTest() throws IOException, DeployException {
+        System.out.println("Start of starting application test");
+        uri = "/hello/{appId}/oi/";
+        Node.createListener(port);
+        int id = createAndStartApplication(port, appName, uri);
+
+        Node.undeployApplication(id);
+        Node.stopListener(port);
+        assert (!TestUtils.isEndpointResponding(port, uri));
+        assert (!TestUtils.isPortOpen(port));
+        System.out.println("End of start application test");
+    }
+
+    @Test
     void startApplicationTwiceTest() throws IOException, DeployException {
         System.out.println("Start of starting application test");
         Node.createListener(port);
         int id = createAndStartApplication(port, appName, uri);
-        try {
-            Node.startApplication(id);
-            assert (false);
-        } catch (IllegalArgumentException e) {
-            assert (true);
-        }
+
+        assert(Node.startApplication(id));
 
         Node.undeployApplication(id);
         Node.stopListener(port);
@@ -176,9 +241,6 @@ public class NodeTest {
     }
 
     private int createAndStartApplication(int port, String name, String uri) throws IOException, DeployException {
-        assert (!TestUtils.isPortOpen(port));
-        assert (!TestUtils.isEndpointResponding(port, uri));
-
         Operation operation = new OperationImpl(name, "GET", uri);
         NonFunctionaRequirements nfrs = new NonFunctionaRequirements(100, 10);
         MessageGenerator messageGenerator = new DefaultMessageGenerator("{\n\"message\": \"Hello World!\"\n}");
@@ -189,16 +251,15 @@ public class NodeTest {
 
         Node.startApplication(id);
         assert (TestUtils.isPortOpen(port));
-
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        assert (TestUtils.isEndpointResponding(port, uri));
+        assert (TestUtils.isEndpointResponding(port, uri.replaceAll("/\\{.*?}/", "/1234/")));
 
         return id;
     }
 
+    private String getContext(String uri) {
+        int index = uri.indexOf('/', 2);
+        if (index < 0)
+            index = uri.length() - 1;
+        return uri.substring(0, index);
+    }
 }

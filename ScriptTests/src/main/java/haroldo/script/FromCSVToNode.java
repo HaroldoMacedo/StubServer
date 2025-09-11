@@ -10,7 +10,7 @@ import haroldo.stub.script.summary.SummaryScript;
 import java.util.Properties;
 
 public class FromCSVToNode {
-    static String root = "ScriptTests/src/main/resources/";
+    static String root = "src/main/resources/";
 
     public static void main(String[] args) {
         try {

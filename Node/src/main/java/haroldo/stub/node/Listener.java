@@ -7,6 +7,8 @@ import haroldo.stub.operation.AppsDeployed;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 public class Listener {
@@ -14,6 +16,7 @@ public class Listener {
     private final AppsDeployed appsDeployed;
     private HttpServer server;
     private final StubHttpHandler stubHttpHandler;
+    private final List<String> contextStarted = new ArrayList<>();
 
     public Listener(int port) {
         this.port = port;
@@ -52,8 +55,29 @@ public class Listener {
         if (deployedApplication == null)
             return false;
 
-        server.createContext(deployedApplication.getUri(), stubHttpHandler);
+        createContext(deployedApplication.getUri());
+        deployedApplication.setStarted();
         return true;
+    }
+
+    private void createContext(String uri) {
+        String context = getContext(uri);
+        if (contextStarted.contains(context))
+            return;
+
+        try {
+            server.createContext(context, stubHttpHandler);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        contextStarted.add(context);
+    }
+
+    private String getContext(String uri) {
+        int index = uri.indexOf('/', 2);
+        if (index < 0)
+            index = uri.length() - 1;
+        return uri.substring(0, index);
     }
 
     public boolean stopApplication(int applicationId) {
@@ -64,11 +88,7 @@ public class Listener {
         if (server == null)
             return false;
 
-        try {
-            server.removeContext(deployedApplication.getUri());
-        } catch (IllegalArgumentException e) {
-            // Ignore removal of uri that is not running.
-        }
+        deployedApplication.setStopped();
         return true;
     }
 

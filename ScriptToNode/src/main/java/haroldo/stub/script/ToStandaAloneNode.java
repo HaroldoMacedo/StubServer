@@ -40,9 +40,9 @@ public class ToStandaAloneNode implements ScriptOut {
     public int commit() throws ApiOutException {
         int id;
         try {
-            var operation = new OperationImpl("Hello!", "GET", "/hello");
-            var nfrs = new NonFunctionaRequirements(100, 10);
-            var messageGenerator = new DefaultMessageGenerator("Hello World!");
+            var operation = new OperationImpl(name, "GET", uri);
+            var nfrs = new NonFunctionaRequirements(definitions.getFirst().getLatencyMs(), maxThroughputTPS);
+            var messageGenerator = new DefaultMessageGenerator(definitions.getFirst().getMessage());
             id = Node.deployApplication(port, operation, nfrs, messageGenerator);
             deployedApplicationIdList.add(id);
             definitions = null;
